@@ -23,7 +23,7 @@ public class FeePolicy extends BaseTime {
     private LocalDateTime endTime;
 
     @Builder
-    public FeePolicy(double hostFeeRate, double guestFeeRate, LocalDateTime startTime, LocalDateTime endTime) {
+    private FeePolicy(double hostFeeRate, double guestFeeRate, LocalDateTime startTime, LocalDateTime endTime) {
         this.hostFeeRate = hostFeeRate;
         this.guestFeeRate = guestFeeRate;
         this.startTime = startTime;

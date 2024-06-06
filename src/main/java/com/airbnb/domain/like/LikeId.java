@@ -17,4 +17,9 @@ public class LikeId implements Serializable {
 
     @Column(nullable = false)
     private Long accommodationId;
+
+    public LikeId(Long memberId, Long accommodationId) {
+        this.memberId = memberId;
+        this.accommodationId = accommodationId;
+    }
 }

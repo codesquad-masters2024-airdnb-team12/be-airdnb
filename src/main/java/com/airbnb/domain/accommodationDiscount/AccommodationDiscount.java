@@ -17,13 +17,12 @@ public class AccommodationDiscount {
     @Column(name = "accommodation_discount_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "accommodation_id", nullable = false)
+    @OneToOne(mappedBy = "accommodationDiscount", fetch = FetchType.LAZY)
     private Accommodation accommodation;
     private int remainDiscountCnt;
 
     @Builder
-    public AccommodationDiscount(Accommodation accommodation, int remainDiscountCnt) {
+    private AccommodationDiscount(Accommodation accommodation, int remainDiscountCnt) {
         this.accommodation = accommodation;
         this.remainDiscountCnt = remainDiscountCnt;
     }

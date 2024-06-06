@@ -27,8 +27,8 @@ public class Booking extends BaseTime {
     @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
 
-    @OneToOne(mappedBy = "booking", fetch = FetchType.LAZY)
-    @Column(nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", nullable = false)
     private Payment payment;
 
     private int infants;
@@ -44,7 +44,7 @@ public class Booking extends BaseTime {
     private LocalDate checkOut;
 
     @Builder
-    public Booking(Member guest, Accommodation accommodation, int infants, int children, int adults, LocalDate checkIn, LocalDate checkOut) {
+    private Booking(Member guest, Accommodation accommodation, int infants, int children, int adults, LocalDate checkIn, LocalDate checkOut) {
         this.guest = guest;
         this.accommodation = accommodation;
         this.infants = infants;

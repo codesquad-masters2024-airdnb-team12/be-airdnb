@@ -14,16 +14,19 @@ public class AccommodationHashtag {
     private AccommodationHashtagId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId(value = "accommodationId")
     @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId(value = "hashtagId")
     @JoinColumn(name = "hashtag_id", nullable = false)
     private Hashtag hashtag;
 
     @Builder
-    public AccommodationHashtag(Accommodation accommodation, Hashtag hashtag) {
+    private AccommodationHashtag(Accommodation accommodation, Hashtag hashtag) {
         this.accommodation = accommodation;
         this.hashtag = hashtag;
+        this.id = new AccommodationHashtagId(accommodation.getId(), hashtag.getId());
     }
 }

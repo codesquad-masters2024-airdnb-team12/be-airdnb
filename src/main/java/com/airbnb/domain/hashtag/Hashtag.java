@@ -25,7 +25,7 @@ public class Hashtag extends BaseTime {
     private String icon;
 
     @Builder
-    public Hashtag(HashtagType type, String name, String icon) {
+    private Hashtag(HashtagType type, String name, String icon) {
         this.type = type;
         this.name = name;
         this.icon = icon;

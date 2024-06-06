@@ -25,7 +25,7 @@ public class DiscountPolicy extends BaseTime {
     private LocalDateTime endTime;
 
     @Builder
-    public DiscountPolicy(int initialDiscountCnt, double initialDiscountRate, double weeklyDiscountRate, double monthlyDiscountRate, LocalDateTime startTime, LocalDateTime endTime) {
+    private DiscountPolicy(int initialDiscountCnt, double initialDiscountRate, double weeklyDiscountRate, double monthlyDiscountRate, LocalDateTime startTime, LocalDateTime endTime) {
         this.initialDiscountCnt = initialDiscountCnt;
         this.initialDiscountRate = initialDiscountRate;
         this.weeklyDiscountRate = weeklyDiscountRate;

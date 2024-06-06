@@ -22,7 +22,7 @@ public class AccommodationImg {
     private String imgUrl;
 
     @Builder
-    public AccommodationImg(Accommodation accommodation, String imgUrl) {
+    private AccommodationImg(Accommodation accommodation, String imgUrl) {
         this.accommodation = accommodation;
         this.imgUrl = imgUrl;
     }

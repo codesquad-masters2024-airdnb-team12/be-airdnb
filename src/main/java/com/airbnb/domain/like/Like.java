@@ -15,16 +15,19 @@ public class Like {
     private LikeId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId(value = "memberId")
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "accomodation", nullable = false)
+    @MapsId(value = "accommodationId")
+    @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
 
     @Builder
-    public Like(Member member, Accommodation accommodation) {
+    private Like(Member member, Accommodation accommodation) {
         this.member = member;
         this.accommodation = accommodation;
+        this.id = new LikeId(member.getId(), accommodation.getId());
     }
 }

@@ -17,8 +17,7 @@ public class Payment extends BaseTime {
     @Column(name = "payment_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booking_id", nullable = false, updatable = false)
+    @OneToOne(mappedBy = "accommodation", fetch = FetchType.LAZY)
     private Booking booking;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -50,7 +49,7 @@ public class Payment extends BaseTime {
     private int feeAmount;
 
     @Builder
-    public Payment(Booking booking, FeePolicy feePolicy, DiscountPolicy discountPolicy, PaymentStatus status, Card card, int totalAmount, int pureAmount, int discountAmount, int feeAmount) {
+    private Payment(Booking booking, FeePolicy feePolicy, DiscountPolicy discountPolicy, PaymentStatus status, Card card, int totalAmount, int pureAmount, int discountAmount, int feeAmount) {
         this.booking = booking;
         this.feePolicy = feePolicy;
         this.discountPolicy = discountPolicy;

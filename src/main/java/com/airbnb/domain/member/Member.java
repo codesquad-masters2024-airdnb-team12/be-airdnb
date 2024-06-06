@@ -41,7 +41,7 @@ public class Member extends BaseTime {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Member(String email, LoginType loginType, List<Role> roles, String name, String imgUrl, String refreshToken, String encodedPassword, String accountNumber) {
+    private Member(String email, LoginType loginType, List<Role> roles, String name, String imgUrl, String refreshToken, String encodedPassword, String accountNumber) {
         this.email = email;
         this.loginType = loginType;
         this.roles = roles;

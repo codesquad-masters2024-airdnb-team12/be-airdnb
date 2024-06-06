@@ -32,7 +32,7 @@ public class Review extends BaseTime {
     private LocalDateTime deletedAt;
 
     @Builder
-    public Review(Member guest, Accommodation accommodation, Double rating, String content) {
+    private Review(Member guest, Accommodation accommodation, Double rating, String content) {
         this.guest = guest;
         this.accommodation = accommodation;
         this.rating = rating;

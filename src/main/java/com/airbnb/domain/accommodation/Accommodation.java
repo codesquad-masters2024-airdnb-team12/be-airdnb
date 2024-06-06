@@ -21,7 +21,7 @@ public class Accommodation extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "accommodation_id")
-    private String id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id", referencedColumnName = "member_id", nullable = false)
@@ -44,7 +44,8 @@ public class Accommodation extends BaseTime {
     @Column(length = 1000)
     private String description;
 
-    @OneToOne(mappedBy = "accommodation", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accommodation_id")
     private AccommodationDiscount accommodationDiscount;
 
     @Column(length = 1_000_0000, nullable = false)
@@ -55,7 +56,7 @@ public class Accommodation extends BaseTime {
     private Boolean monthlyDiscountApplied;
 
     @Builder
-    public Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
+    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
         this.host = host;
         this.name = name;
         this.address = address;
