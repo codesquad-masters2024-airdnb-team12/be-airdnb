@@ -1,12 +1,32 @@
 spring:
   application:
     name: airbnb
+
+  # h2 console
   h2:
     console:
       enabled: true
       path: /h2-console
+
+  # datasource - h2 (for test)
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:~/airbnb
     username: sa
     password:
+
+  # ddl-auto
+  jpa:
+    hibernate:
+      ddl-auto: create # create create-drop update validate none(default)
+
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+# Logging level
+logging:
+  level:
+    com:
+      airbnb: debug
