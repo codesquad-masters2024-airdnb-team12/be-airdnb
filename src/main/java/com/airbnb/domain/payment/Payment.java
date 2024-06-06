@@ -17,7 +17,7 @@ public class Payment extends BaseTime {
     @Column(name = "payment_id")
     private Long id;
 
-    @OneToOne(mappedBy = "accommodation", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
     private Booking booking;
 
     @ManyToOne(fetch = FetchType.LAZY)

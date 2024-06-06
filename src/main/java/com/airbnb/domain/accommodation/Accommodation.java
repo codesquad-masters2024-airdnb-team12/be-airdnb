@@ -56,7 +56,7 @@ public class Accommodation extends BaseTime {
     private Boolean monthlyDiscountApplied;
 
     @Builder
-    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
+    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
         this.host = host;
         this.name = name;
         this.address = address;
@@ -66,6 +66,7 @@ public class Accommodation extends BaseTime {
         this.bath = bath;
         this.maxGuests = maxGuests;
         this.description = description;
+        this.accommodationDiscount = accommodationDiscount;
         this.costPerNight = costPerNight;
         this.initialDiscountApplied = initialDiscountApplied;
         this.weeklyDiscountApplied = weeklyDiscountApplied;
