@@ -1,6 +1,6 @@
 package com.airbnb.domain.accommodationDiscount;
 
-import com.airbnb.domain.accommodation.Accommodation;
+import com.airbnb.domain.accommodation.entity.Accommodation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

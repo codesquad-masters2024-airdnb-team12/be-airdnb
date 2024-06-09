@@ -1,6 +1,6 @@
 package com.airbnb.domain.like;
 
-import com.airbnb.domain.accommodation.Accommodation;
+import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.*;

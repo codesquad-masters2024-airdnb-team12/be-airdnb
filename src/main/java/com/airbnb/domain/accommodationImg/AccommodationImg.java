@@ -1,6 +1,6 @@
 package com.airbnb.domain.accommodationImg;
 
-import com.airbnb.domain.accommodation.Accommodation;
+import com.airbnb.domain.accommodation.entity.Accommodation;
 import jakarta.persistence.*;
 import lombok.*;
 

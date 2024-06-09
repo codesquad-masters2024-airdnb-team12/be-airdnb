@@ -1,4 +1,4 @@
-package com.airbnb.domain.accommodation;
+package com.airbnb.domain.accommodation.entity;
 
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
 import com.airbnb.domain.common.Address;
