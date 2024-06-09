@@ -39,6 +39,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core'
+    testImplementation 'io.github.autoparams:autoparams:8.3.0'
 }
 
 tasks.named('test') {
