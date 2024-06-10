@@ -17,7 +17,6 @@ import org.springframework.data.geo.Point;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -63,11 +62,11 @@ public class Accommodation extends BaseTime {
     @Column(length = 1000)
     private String description;
 
-    @OneToMany(mappedBy = "accommodation")
+    @OneToMany(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
     @Column(nullable = false)
     private Set<AccommodationHashtag> accommodationHashtags;
 
-    @OneToOne(mappedBy = "accommodation")
+    @OneToOne(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
     private AccommodationDiscount accommodationDiscount;
 
     @Min(10_000)
@@ -108,7 +107,7 @@ public class Accommodation extends BaseTime {
                 .build());
     }
 
-    public void addAccommodationHashtags(List<Hashtag> hashtags) {
+    public void addAccommodationHashtags(Set<Hashtag> hashtags) {
         hashtags.forEach(this::addAccommodationHashtag);
     }
 }
