@@ -13,8 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,12 +33,18 @@ public class AccommodationService {
         Accommodation entity = request.toEntity(host);
 
         // 태그 조회
-        List<String> names = new ArrayList<>();
+        Set<String> names = new HashSet<>();
         names.add(request.getBuildingType());
         names.add(request.getAccommodationType());
         names.addAll(request.getAmenities());
 
-        List<Hashtag> hashtags = hashtagRepository.findByNameIn(names);
+        Set<Hashtag> hashtags = hashtagRepository.findByNameIn(names);
+
+        Set<String> foundNames = hashtags.stream().map(Hashtag::getName).collect(Collectors.toSet());
+
+        if (names.stream().anyMatch(name -> !foundNames.contains(name))) {
+            throw new IllegalArgumentException("존재하지 않는 해시태그입니다");
+        }
 
         // 숙소 태그 등록
         entity.addAccommodationHashtags(hashtags);
