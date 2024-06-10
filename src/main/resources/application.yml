@@ -30,3 +30,8 @@ logging:
   level:
     com:
       airbnb: debug
+
+# url prefix
+server:
+  servlet:
+    context-path: /api/v1
