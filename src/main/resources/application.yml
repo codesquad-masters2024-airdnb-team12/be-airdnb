@@ -18,12 +18,20 @@ spring:
   # ddl-auto
   jpa:
     hibernate:
-      ddl-auto: create # create create-drop update validate none(default)
+      ddl-auto: create # create create-drop update validate none(default/ on production)
 
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+
+    # data.sql operate after hibernate init (not on production)
+    defer-datasource-initialization: true
+
+  # sql init (not on production)
+  sql:
+    init:
+      mode: always
 
 # Logging level
 logging:
