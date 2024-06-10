@@ -5,6 +5,7 @@ import com.airbnb.domain.member.dto.response.MemberResponse;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
 import com.airbnb.global.security.PasswordEncoder;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,25 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(signUpRequest.toEntity(passwordEncoder));
         return MemberResponse.of(savedMember);
+    }
+
+    public List<MemberResponse> getAll() {
+        List<Member> allMembers = memberRepository.findAll();
+        return allMembers.stream().map(MemberResponse::of).toList();
+    }
+
+    public MemberResponse getById(Long targetId) throws IllegalArgumentException {
+        Member targetMember = memberRepository.findById(targetId)
+            .orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
+
+        return MemberResponse.of(targetMember);
+    }
+
+    public MemberResponse getByEmail(String email) throws IllegalArgumentException {
+        Member targetMember = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
+
+        return MemberResponse.of(targetMember);
     }
 
     private boolean isPasswordConfirmed(String password, String confirmPassword) {
