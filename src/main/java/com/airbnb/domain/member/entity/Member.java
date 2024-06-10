@@ -1,4 +1,4 @@
-package com.airbnb.domain.member;
+package com.airbnb.domain.member.entity;
 
 import com.airbnb.domain.common.BaseTime;
 import com.airbnb.domain.common.LoginType;

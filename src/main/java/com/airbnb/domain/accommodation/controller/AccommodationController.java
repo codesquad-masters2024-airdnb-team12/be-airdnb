@@ -20,8 +20,11 @@ public class AccommodationController {
 
     @PostMapping
     public ResponseEntity<AccommodationResponse> create(@Valid @RequestBody AccommodationCreateRequest request) {
+        // TODO: member 정보 파라미터로 받도록 수정
+        Long hostId = 1L;
+
         return ResponseEntity.ok(
-                accommodationService.create(request)
+                accommodationService.create(hostId, request)
         );
     }
 }
