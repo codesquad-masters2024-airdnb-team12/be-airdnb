@@ -3,8 +3,10 @@ package com.airbnb.domain.accommodation.entity;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.BaseTime;
-import com.airbnb.domain.member.Member;
+import com.airbnb.domain.member.entity.Member;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,9 +38,21 @@ public class Accommodation extends BaseTime {
 
     @Column(nullable = false)
     private Point coordinate;
+
+    @Min(1)
+    @Max(20)
     private int bedroom;
+
+    @Min(0)
+    @Max(20)
     private int bed;
+
+    @Min(0)
+    @Max(20)
     private int bath;
+
+    @Min(1)
+    @Max(20)
     private int maxGuests;
 
     @Column(length = 1000)
@@ -48,12 +62,13 @@ public class Accommodation extends BaseTime {
     @JoinColumn(name = "accommodation_id")
     private AccommodationDiscount accommodationDiscount;
 
-    @Column(length = 1_000_0000, nullable = false)
+    @Min(10_000)
+    @Max(10_000_000)
     private int costPerNight;
     private LocalDateTime deletedAt;
-    private Boolean initialDiscountApplied;
-    private Boolean weeklyDiscountApplied;
-    private Boolean monthlyDiscountApplied;
+    private boolean initialDiscountApplied;
+    private boolean weeklyDiscountApplied;
+    private boolean monthlyDiscountApplied;
 
     @Builder
     private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {

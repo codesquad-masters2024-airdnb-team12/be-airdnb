@@ -2,7 +2,8 @@ package com.airbnb.domain.accommodation.dto.request;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.Address;
-import com.airbnb.domain.member.Member;
+import com.airbnb.domain.member.entity.Member;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.geo.Point;
 
@@ -13,26 +14,64 @@ import java.util.List;
 @AllArgsConstructor
 public class AccommodationCreateRequest {
 
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String country;
+
+    @NotBlank
     private String zipcode;
     private String district;
+
+    @NotBlank
     private String region;
+
+    @NotBlank
     private String address;
     private String detailedAddress;
-    private Double latitude;    // 위도
-    private Double longitude;   // 경도
-    private Integer bedroom;
-    private Integer bed;
-    private Integer bath;
-    private Integer maxGuests;
+
+    @Min(value = -90)
+    @Max(value = 90)
+    private double latitude;    // 위도
+
+    @Min(value = -180)
+    @Max(value = 180)
+    private double longitude;   // 경도
+
+    @Min(1)
+    @Max(20)
+    private int bedroom;
+
+    @Min(0)
+    @Max(20)
+    private int bed;
+
+    @Min(0)
+    @Max(20)
+    private int bath;
+
+    @Min(1)
+    @Max(20)
+    private int maxGuests;
+
+    @Size(max = 1000)
     private String description;
-    private Integer costPerNight;
-    private Boolean initialDiscountApplied;
-    private Boolean weeklyDiscountApplied;
-    private Boolean monthlyDiscountApplied;
+
+    @Min(10_000)
+    @Max(10_000_000)
+    private int costPerNight;
+    private boolean initialDiscountApplied;
+    private boolean weeklyDiscountApplied;
+    private boolean monthlyDiscountApplied;
+
+    @NotBlank
     private String buildingType;        // 건물 유형
+
+    @NotBlank
     private String accommodationType;   // 숙소 유형
+
+    @NotNull
     private List<String> amenities;     // 편의시설
 
     public Accommodation toEntity(Member host) {
