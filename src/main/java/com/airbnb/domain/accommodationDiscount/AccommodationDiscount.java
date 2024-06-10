@@ -17,7 +17,8 @@ public class AccommodationDiscount {
     @Column(name = "accommodation_discount_id")
     private Long id;
 
-    @OneToOne(mappedBy = "accommodationDiscount", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accommodation_id")
     private Accommodation accommodation;
     private int remainDiscountCnt;
 

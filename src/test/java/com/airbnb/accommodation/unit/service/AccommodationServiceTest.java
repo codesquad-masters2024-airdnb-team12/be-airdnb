@@ -5,6 +5,8 @@ import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodation.service.AccommodationService;
+import com.airbnb.domain.hashtag.entity.Hashtag;
+import com.airbnb.domain.hashtag.repository.HashtagRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
 import com.navercorp.fixturemonkey.FixtureMonkey;
@@ -18,11 +20,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -37,6 +39,9 @@ class AccommodationServiceTest {
 
     @Mock
     AccommodationRepository accommodationRepository;
+
+    @Mock
+    HashtagRepository hashtagRepository;
 
     FixtureMonkey sut;
 
@@ -54,10 +59,12 @@ class AccommodationServiceTest {
         // given
         AccommodationCreateRequest request = sut.giveMeOne(AccommodationCreateRequest.class);
         Member member = mock(Member.class);
+        List<Hashtag> hashtags = sut.giveMe(Hashtag.class, 5);
         Accommodation accommodation = request.toEntity(member);
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(accommodationRepository.save(any(Accommodation.class))).willReturn(accommodation);
+        given(hashtagRepository.findByNameIn(anyList())).willReturn(hashtags);
 
         // when
         AccommodationResponse accommodationResponse = accommodationService.create(member.getId(), request);

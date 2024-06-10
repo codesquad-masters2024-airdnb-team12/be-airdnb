@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.geo.Point;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -72,7 +72,7 @@ public class AccommodationCreateRequest {
     private String accommodationType;   // 숙소 유형
 
     @NotNull
-    private List<String> amenities;     // 편의시설
+    private Set<String> amenities;     // 편의시설
 
     public Accommodation toEntity(Member host) {
         Address accommoAddress = Address.builder()

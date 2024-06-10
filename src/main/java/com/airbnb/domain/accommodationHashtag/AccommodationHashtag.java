@@ -1,7 +1,7 @@
 package com.airbnb.domain.accommodationHashtag;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
-import com.airbnb.domain.hashtag.Hashtag;
+import com.airbnb.domain.hashtag.entity.Hashtag;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.airbnb.domain.hashtag;
+package com.airbnb.domain.hashtag.entity;
 
 public enum HashtagType {
     /**

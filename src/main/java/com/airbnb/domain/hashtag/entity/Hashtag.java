@@ -1,4 +1,4 @@
-package com.airbnb.domain.hashtag;
+package com.airbnb.domain.hashtag.entity;
 
 import com.airbnb.domain.common.BaseTime;
 import jakarta.persistence.*;
