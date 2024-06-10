@@ -3,7 +3,9 @@ package com.airbnb.domain.member.entity;
 import com.airbnb.domain.common.BaseTime;
 import com.airbnb.domain.common.LoginType;
 import com.airbnb.domain.common.Role;
+import com.airbnb.domain.member.dto.request.UpdateMemberRequest;
 import com.airbnb.domain.member.entity.bankAccount.BankType;
+import com.airbnb.global.security.PasswordEncoder;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -59,5 +61,14 @@ public class Member extends BaseTime {
         this.encodedPassword = encodedPassword;
         this.accountBank = BankType.of(bankName);
         this.accountNumber = accountNumber;
+    }
+
+    public Member update(UpdateMemberRequest updateRequest, PasswordEncoder passwordEncoder) {
+        this.name = updateRequest.getName();
+        this.imgUrl = updateRequest.getImgUrl();
+        this.encodedPassword = passwordEncoder.encode(updateRequest.getPassword());
+        this.accountBank = BankType.of(updateRequest.getBankName());
+        this.accountNumber = updateRequest.getAccountNumber();
+        return this;
     }
 }

@@ -1,6 +1,7 @@
 package com.airbnb.domain.member.service;
 
 import com.airbnb.domain.member.dto.request.SignUpRequest;
+import com.airbnb.domain.member.dto.request.UpdateMemberRequest;
 import com.airbnb.domain.member.dto.response.MemberResponse;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
@@ -47,6 +48,18 @@ public class MemberService {
             .orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
 
         return MemberResponse.of(targetMember);
+    }
+
+    @Transactional
+    public MemberResponse update(Long targetId, UpdateMemberRequest updateRequest) throws IllegalArgumentException {
+        Member targetMember = memberRepository.findById(targetId)
+            .orElseThrow(() -> new IllegalArgumentException("회원정보가 없습니다."));
+        if (!isPasswordConfirmed(updateRequest.getPassword(), updateRequest.getConfirmPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        Member updatedMember = targetMember.update(updateRequest, passwordEncoder);
+        return MemberResponse.of(updatedMember);
     }
 
     private boolean isPasswordConfirmed(String password, String confirmPassword) {
