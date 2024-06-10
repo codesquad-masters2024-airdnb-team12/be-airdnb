@@ -1,13 +1,15 @@
-package com.airbnb.domain.member;
+package com.airbnb.domain.member.entity;
 
 import com.airbnb.domain.common.BaseTime;
 import com.airbnb.domain.common.LoginType;
 import com.airbnb.domain.common.Role;
+import com.airbnb.domain.member.entity.bankAccount.BankType;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -24,7 +26,7 @@ public class Member extends BaseTime {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private LoginType loginType;    // default email
+    private LoginType loginType;
 
     @ElementCollection(fetch = FetchType.EAGER) // TODO: LAZY로 할지 고민해보기
     @Enumerated(EnumType.STRING)
@@ -35,13 +37,19 @@ public class Member extends BaseTime {
     private String imgUrl;
     private String refreshToken;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String encodedPassword;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private BankType accountBank;
+
+    @Column(nullable = false)
     private String accountNumber;
     private LocalDateTime deletedAt;
 
     @Builder
-    private Member(String email, LoginType loginType, List<Role> roles, String name, String imgUrl, String refreshToken, String encodedPassword, String accountNumber) {
+    private Member(String email, LoginType loginType, List<Role> roles, String name, String imgUrl, String refreshToken, String encodedPassword, String bankName, String accountNumber) {
         this.email = email;
         this.loginType = loginType;
         this.roles = roles;
@@ -49,6 +57,7 @@ public class Member extends BaseTime {
         this.imgUrl = imgUrl;
         this.refreshToken = refreshToken;
         this.encodedPassword = encodedPassword;
+        this.accountBank = BankType.of(bankName);
         this.accountNumber = accountNumber;
     }
 }

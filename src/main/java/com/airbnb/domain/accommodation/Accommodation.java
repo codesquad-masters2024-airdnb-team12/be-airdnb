@@ -3,7 +3,7 @@ package com.airbnb.domain.accommodation;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.BaseTime;
-import com.airbnb.domain.member.Member;
+import com.airbnb.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
