@@ -2,8 +2,10 @@ package com.airbnb.domain.member.entity.bankAccount;
 
 import java.util.Arrays;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum BankType {
     KAKAO("카카오뱅크"),
     KB("국민은행"),
@@ -23,10 +25,6 @@ public enum BankType {
     ;
 
     private final String korean;
-
-    BankType(String korean) {
-        this.korean = korean;
-    }
 
     public static BankType of(String korean) {
         return Arrays.stream(BankType.values())

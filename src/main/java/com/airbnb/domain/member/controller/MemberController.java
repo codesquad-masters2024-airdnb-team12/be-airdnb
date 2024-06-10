@@ -2,12 +2,12 @@ package com.airbnb.domain.member.controller;
 
 import com.airbnb.domain.member.dto.request.SignUpRequest;
 import com.airbnb.domain.member.dto.request.UpdateMemberRequest;
+import com.airbnb.domain.member.dto.response.MemberListResponse;
 import com.airbnb.domain.member.dto.response.MemberResponse;
 import com.airbnb.domain.member.service.MemberService;
-import java.util.List;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,20 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
+@RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberResponse> signUp(@Validated @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<MemberResponse> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         MemberResponse createdMember = memberService.signUp(signUpRequest);
         return ResponseEntity.ok(createdMember);
     }
 
     @GetMapping
-    public ResponseEntity<List<MemberResponse>> getAll() {
-        List<MemberResponse> allMembers = memberService.getAll();
+    public ResponseEntity<MemberListResponse> getAll() {
+        MemberListResponse allMembers = memberService.getAll();
         return ResponseEntity.ok(allMembers);
     }
 
@@ -43,8 +43,7 @@ public class MemberController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MemberResponse> updateById(@PathVariable Long id,
-        @RequestBody @Validated UpdateMemberRequest updateRequest) {
+    public ResponseEntity<MemberResponse> updateById(@PathVariable Long id, @RequestBody @Valid UpdateMemberRequest updateRequest) {
         MemberResponse updatedMember = memberService.update(id, updateRequest);
         return ResponseEntity.ok(updatedMember);
     }

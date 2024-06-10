@@ -44,11 +44,8 @@ public class Member extends BaseTime {
     @Column(name = "password", nullable = false)
     private String encodedPassword;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private BankType accountBank;
-
-    @Column(nullable = false)
     private String accountNumber;
     private LocalDateTime deletedAt;
 
@@ -67,7 +64,6 @@ public class Member extends BaseTime {
 
     public Member update(UpdateMemberRequest updateRequest, PasswordEncoder passwordEncoder) {
         this.name = updateRequest.getName();
-        this.imgUrl = updateRequest.getImgUrl();
         this.encodedPassword = passwordEncoder.encode(updateRequest.getPassword());
         this.accountBank = BankType.of(updateRequest.getBankName());
         this.accountNumber = updateRequest.getAccountNumber();

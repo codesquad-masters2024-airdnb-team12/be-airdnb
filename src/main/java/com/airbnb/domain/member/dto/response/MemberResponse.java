@@ -10,9 +10,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberResponse {
 
-    private String email;
-    private String imgUrl;
-    private String name;
+    private final String email;
+    private final String imgUrl;
+    private final String name;
 
     public static MemberResponse of(Member member) {
         return MemberResponse.builder()
