@@ -39,7 +39,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.assertj:assertj-core'
-    testImplementation 'io.github.autoparams:autoparams:8.3.0'
+    testImplementation "com.navercorp.fixturemonkey:fixture-monkey-starter:1.0.17"
+    testImplementation "com.navercorp.fixturemonkey:fixture-monkey-jakarta-validation:1.0.17"
 }
 
 tasks.named('test') {
