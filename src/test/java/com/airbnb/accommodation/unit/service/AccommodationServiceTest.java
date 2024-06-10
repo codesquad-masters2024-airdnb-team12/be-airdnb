@@ -6,6 +6,7 @@ import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodation.service.AccommodationService;
 import com.airbnb.domain.hashtag.entity.Hashtag;
+import com.airbnb.domain.hashtag.entity.HashtagType;
 import com.airbnb.domain.hashtag.repository.HashtagRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
@@ -20,8 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -59,12 +61,24 @@ class AccommodationServiceTest {
         // given
         AccommodationCreateRequest request = sut.giveMeOne(AccommodationCreateRequest.class);
         Member member = mock(Member.class);
-        List<Hashtag> hashtags = sut.giveMe(Hashtag.class, 5);
         Accommodation accommodation = request.toEntity(member);
+
+        Set<Hashtag> hashtags = new HashSet<>();
+        hashtags.add(sut.giveMeBuilder(Hashtag.class)
+                .set("name", request.getAccommodationType())
+                .set("type", HashtagType.ACCOMMODATION_TYPE)
+                .sample());
+        hashtags.add(sut.giveMeBuilder(Hashtag.class)
+                .set("name", request.getBuildingType())
+                .set("type", HashtagType.BUILDING_TYPE)
+                .sample());
+        hashtags.addAll(request.getAmenities().stream()
+                .map(a -> sut.giveMeBuilder(Hashtag.class).set("type", "AMENITY").set("name", a).sample())
+                .toList());
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(accommodationRepository.save(any(Accommodation.class))).willReturn(accommodation);
-        given(hashtagRepository.findByNameIn(anyList())).willReturn(hashtags);
+        given(hashtagRepository.findByNameIn(anySet())).willReturn(Set.copyOf(hashtags));
 
         // when
         AccommodationResponse accommodationResponse = accommodationService.create(member.getId(), request);
