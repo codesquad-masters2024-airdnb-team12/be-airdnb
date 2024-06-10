@@ -62,6 +62,11 @@ public class MemberService {
         return MemberResponse.of(updatedMember);
     }
 
+    @Transactional
+    public void delete(Long targetId) throws IllegalArgumentException {
+        memberRepository.deleteById(targetId);
+    }
+
     private boolean isPasswordConfirmed(String password, String confirmPassword) {
         return password.equals(confirmPassword);
     }
