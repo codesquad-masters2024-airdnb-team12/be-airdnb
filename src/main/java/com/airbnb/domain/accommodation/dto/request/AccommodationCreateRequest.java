@@ -3,6 +3,7 @@ package com.airbnb.domain.accommodation.dto.request;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.member.entity.Member;
+import com.airbnb.global.validator.NoNullElements;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.geo.Point;
@@ -72,6 +73,7 @@ public class AccommodationCreateRequest {
     private String accommodationType;   // 숙소 유형
 
     @NotNull
+    @NoNullElements
     private Set<String> amenities;     // 편의시설
 
     public Accommodation toEntity(Member host) {
