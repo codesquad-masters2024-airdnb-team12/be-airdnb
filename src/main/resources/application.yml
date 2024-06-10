@@ -30,3 +30,7 @@ logging:
   level:
     com:
       airbnb: debug
+
+pwd:
+  encrypt:
+    secret-key:
