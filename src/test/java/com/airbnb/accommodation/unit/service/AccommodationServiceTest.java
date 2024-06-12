@@ -1,6 +1,6 @@
 package com.airbnb.accommodation.unit.service;
 
-import com.airbnb.domain.AccommodationInfo.entity.InfoType;
+import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
 import com.airbnb.domain.accommodation.dto.request.AccommodationInfoRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
@@ -10,7 +10,6 @@ import com.airbnb.domain.accommodation.entity.BuildingType;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodation.service.AccommodationService;
 import com.airbnb.domain.facility.entity.Facility;
-import com.airbnb.domain.facility.entity.FacilityType;
 import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
@@ -66,13 +65,13 @@ class AccommodationServiceTest {
         AccommodationCreateRequest request = sut.giveMeBuilder(AccommodationCreateRequest.class)
                 .set("accommodationType", AccommodationType.APARTMENT.name())
                 .set("buildingType", BuildingType.ROOM.name())
-                .set("info", Set.of(new AccommodationInfoRequest("코딩 가능", InfoType.ACTIVITY_LEISURE.name())))
+                .set("info", Set.of(new AccommodationInfoRequest("코딩 가능", FacilityType.ACTIVITY_LEISURE.name())))
                 .sample();
         Member member = mock(Member.class);
         Accommodation accommodation = request.toEntity(member);
 
         Set<Facility> facilities = new HashSet<>(request.getFacilities().stream()
-                .map(f -> sut.giveMeBuilder(Facility.class).set("type", FacilityType.ESSENTIAL).set("name", f).sample())
+                .map(f -> sut.giveMeBuilder(Facility.class).set("type", FacilityType.ACTIVITY_LEISURE).set("name", f).sample())
                 .toList());
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));

@@ -1,7 +1,7 @@
 package com.airbnb.domain.accommodation.dto.request;
 
 import com.airbnb.domain.AccommodationInfo.entity.AccommodationInfo;
-import com.airbnb.domain.AccommodationInfo.entity.InfoType;
+import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -22,7 +22,7 @@ public class AccommodationInfoRequest {
         return AccommodationInfo.builder()
                 .accommodation(accommodation)
                 .name(name)
-                .type(InfoType.valueOf(type))
+                .type(FacilityType.valueOf(type))
                 .build();
     }
 }

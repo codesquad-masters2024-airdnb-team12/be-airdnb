@@ -1,6 +1,7 @@
 package com.airbnb.domain.AccommodationInfo.entity;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
+import com.airbnb.domain.common.FacilityType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,10 +27,10 @@ public class AccommodationInfo {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private InfoType type;
+    private FacilityType type;
 
     @Builder
-    private AccommodationInfo(Accommodation accommodation, String name, InfoType type) {
+    private AccommodationInfo(Accommodation accommodation, String name, FacilityType type) {
         this.accommodation = accommodation;
         this.name = name;
         this.type = type;

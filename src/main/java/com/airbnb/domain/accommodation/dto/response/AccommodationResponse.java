@@ -26,6 +26,7 @@ public class AccommodationResponse {
         return AccommodationResponse.builder()
                 .id(accommodation.getId())
                 .name(accommodation.getName())
+                .address(accommodation.getAddress())
                 .coordinate(accommodation.getCoordinate())
                 .bedroom(accommodation.getBedroom())
                 .bed(accommodation.getBed())

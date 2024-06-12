@@ -1,5 +1,6 @@
 package com.airbnb.domain.facility.entity;
 
+import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
