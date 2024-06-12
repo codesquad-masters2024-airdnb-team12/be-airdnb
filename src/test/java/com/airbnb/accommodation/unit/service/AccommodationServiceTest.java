@@ -1,6 +1,8 @@
 package com.airbnb.accommodation.unit.service;
 
+import com.airbnb.domain.AccommodationInfo.entity.InfoType;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationInfoRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.entity.AccommodationType;
@@ -64,6 +66,7 @@ class AccommodationServiceTest {
         AccommodationCreateRequest request = sut.giveMeBuilder(AccommodationCreateRequest.class)
                 .set("accommodationType", AccommodationType.APARTMENT.name())
                 .set("buildingType", BuildingType.ROOM.name())
+                .set("info", Set.of(new AccommodationInfoRequest("코딩 가능", InfoType.ACTIVITY_LEISURE.name())))
                 .sample();
         Member member = mock(Member.class);
         Accommodation accommodation = request.toEntity(member);

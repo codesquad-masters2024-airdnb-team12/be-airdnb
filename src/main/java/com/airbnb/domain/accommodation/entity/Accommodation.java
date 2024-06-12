@@ -1,5 +1,6 @@
 package com.airbnb.domain.accommodation.entity;
 
+import com.airbnb.domain.AccommodationInfo.entity.AccommodationInfo;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
 import com.airbnb.domain.accommodationFacility.AccommodationFacility;
 import com.airbnb.domain.common.Address;
@@ -74,6 +75,10 @@ public class Accommodation extends BaseTime {
     @Column(nullable = false)
     private Set<AccommodationFacility> accommodationFacilities;
 
+    @OneToMany(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
+    @Column(nullable = false)
+    private Set<AccommodationInfo> accommodationInfos;
+
     @OneToOne(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
     private AccommodationDiscount accommodationDiscount;
 
@@ -86,7 +91,7 @@ public class Accommodation extends BaseTime {
     private boolean monthlyDiscountApplied;
 
     @Builder
-    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
+    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, Set<AccommodationInfo> accommodationInfos, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
         this.host = host;
         this.name = name;
         this.address = address;
@@ -99,6 +104,7 @@ public class Accommodation extends BaseTime {
         this.accommodationType = accommodationType;
         this.buildingType = buildingType;
         this.accommodationFacilities = accommodationFacilities == null ? new HashSet<>() : accommodationFacilities;
+        this.accommodationInfos = accommodationInfos == null ? new HashSet<>() : accommodationInfos;
         this.accommodationDiscount = accommodationDiscount;
         this.costPerNight = costPerNight;
         this.initialDiscountApplied = initialDiscountApplied;
@@ -119,5 +125,9 @@ public class Accommodation extends BaseTime {
 
     public void addAccommodationFacilities(Set<Facility> facilities) {
         facilities.forEach(this::addAccommodationFacility);
+    }
+
+    public void addAccommodationInfos(Set<AccommodationInfo> accommodationInfos) {
+        this.accommodationInfos.addAll(accommodationInfos);
     }
 }

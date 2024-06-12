@@ -1,6 +1,7 @@
 package com.airbnb.domain.accommodation.service;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationInfoRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
@@ -43,6 +44,12 @@ public class AccommodationService {
 
         // 숙소 태그 등록
         entity.addAccommodationFacilities(facilities);
+
+        // 숙소 정보 등록
+        entity.addAccommodationInfos(
+                request.getInfo().stream().map(i -> i.toEntity(entity))
+                        .collect(Collectors.toSet())
+        );
 
         // 첫 이용객 할인 적용 시
         if (entity.isInitialDiscountApplied()) {

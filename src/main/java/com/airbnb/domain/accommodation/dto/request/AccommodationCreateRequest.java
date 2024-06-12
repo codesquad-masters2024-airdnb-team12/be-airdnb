@@ -76,7 +76,10 @@ public class AccommodationCreateRequest {
 
     @NotNull
     @NoNullElements
-    private Set<String> facilities;     // 편의시설
+    private Set<String> facilities;     // 필수 편의시설
+
+    @NotNull
+    private Set<AccommodationInfoRequest> info; // 호스트 입력 숙소 편의시설 정보
 
     public Accommodation toEntity(Member host) {
         Address accommoAddress = Address.builder()
