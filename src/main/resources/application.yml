@@ -43,3 +43,7 @@ logging:
 server:
   servlet:
     context-path: /api/v1
+
+pwd:
+  encrypt:
+    secret-key:

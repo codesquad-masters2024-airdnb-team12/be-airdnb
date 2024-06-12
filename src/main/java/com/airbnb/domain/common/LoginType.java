@@ -1,5 +1,5 @@
 package com.airbnb.domain.common;
 
 public enum LoginType {
-    KAKAO, GITHUB, NAVER, GOOGLE, EMAIL
+    KAKAO, GITHUB, NAVER, GOOGLE, DEFALUT
 }
