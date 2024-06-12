@@ -25,10 +25,6 @@ public class AccommodationCreateRequest {
 
     @NotBlank
     private String zipcode;
-    private String district;
-
-    @NotBlank
-    private String region;
 
     @NotBlank
     private String address;
@@ -58,7 +54,7 @@ public class AccommodationCreateRequest {
     @Max(20)
     private int maxGuests;
 
-    @Size(max = 1000)
+    @Size(max = 5000)
     private String description;
 
     @Min(10_000)
@@ -85,8 +81,6 @@ public class AccommodationCreateRequest {
         Address accommoAddress = Address.builder()
                 .country(country)
                 .zipcode(zipcode)
-                .district(district)
-                .region(region)
                 .address(address)
                 .detailedAddress(detailedAddress)
                 .build();
@@ -95,7 +89,7 @@ public class AccommodationCreateRequest {
                 .host(host)
                 .name(name)
                 .address(accommoAddress)
-                .coordinate(new Point(latitude, longitude))
+                .coordinate(new Point(longitude, latitude)) // x가 경도, y가 위도
                 .bedroom(bedroom)
                 .bed(bed)
                 .bath(bath)

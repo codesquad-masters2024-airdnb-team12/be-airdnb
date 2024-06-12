@@ -60,7 +60,7 @@ public class Accommodation extends BaseTime {
     @Max(20)
     private int maxGuests;
 
-    @Column(length = 1000)
+    @Column(length = 5000)
     private String description;
 
     @Enumerated(EnumType.STRING)

@@ -17,21 +17,15 @@ public class Address {
 
     @Column(nullable = false)
     private String zipcode;
-    private String district;    // 면, 읍, 구, 군, 시명 (district)
-
-    @Column(nullable = false)
-    private String region;      // 시, 도명 (city/province)
 
     @Column(nullable = false)
     private String address;
     private String detailedAddress;
 
     @Builder
-    private Address(String country, String zipcode, String district, String region, String address, String detailedAddress) {
+    private Address(String country, String zipcode, String address, String detailedAddress) {
         this.country = country;
         this.zipcode = zipcode;
-        this.district = district;
-        this.region = region;
         this.address = address;
         this.detailedAddress = detailedAddress;
     }
