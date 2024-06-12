@@ -4,6 +4,8 @@ import com.airbnb.domain.accommodation.controller.AccommodationController;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
 import com.airbnb.domain.accommodation.entity.Accommodation;
+import com.airbnb.domain.accommodation.entity.AccommodationType;
+import com.airbnb.domain.accommodation.entity.BuildingType;
 import com.airbnb.domain.accommodation.service.AccommodationService;
 import com.airbnb.domain.member.entity.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +57,10 @@ class AccommodationControllerTest {
     void givenMemberIdAccommodationCreateRequest_whenCreate_thenSaveAndReturnAccommodationResponse() throws Exception {
         // given
         Long memberId = 1L;
-        AccommodationCreateRequest request = sut.giveMeOne(AccommodationCreateRequest.class);
+        AccommodationCreateRequest request = sut.giveMeBuilder(AccommodationCreateRequest.class)
+                .set("accommodationType", AccommodationType.APARTMENT.name())
+                .set("buildingType", BuildingType.ROOM.name())
+                .sample();
         Accommodation accommodation = request.toEntity(mock(Member.class));
         AccommodationResponse response = AccommodationResponse.from(accommodation);
         given(accommodationService.create(eq(memberId), any(AccommodationCreateRequest.class)))

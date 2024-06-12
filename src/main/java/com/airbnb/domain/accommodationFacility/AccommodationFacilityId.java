@@ -1,4 +1,4 @@
-package com.airbnb.domain.accommodationHashtag;
+package com.airbnb.domain.accommodationFacility;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -10,16 +10,16 @@ import java.io.Serializable;
 @Embeddable
 @NoArgsConstructor
 @EqualsAndHashCode
-public class AccommodationHashtagId implements Serializable {
+public class AccommodationFacilityId implements Serializable {
 
     @Column(nullable = false)
     private Long accommodationId;
 
     @Column(nullable = false)
-    private Long hashtagId;
+    private Long facilityId;
 
-    public AccommodationHashtagId(Long accommodationId, Long hashtagId) {
+    public AccommodationFacilityId(Long accommodationId, Long facilityId) {
         this.accommodationId = accommodationId;
-        this.hashtagId = hashtagId;
+        this.facilityId = facilityId;
     }
 }

@@ -5,8 +5,8 @@ import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
-import com.airbnb.domain.hashtag.entity.Hashtag;
-import com.airbnb.domain.hashtag.repository.HashtagRepository;
+import com.airbnb.domain.facility.entity.Facility;
+import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class AccommodationService {
 
     private final AccommodationRepository accommodationRepository;
     private final MemberRepository memberRepository;
-    private final HashtagRepository hashtagRepository;
+    private final FacilityRepository facilityRepository;
 
     @Transactional
     public AccommodationResponse create(Long hostId, AccommodationCreateRequest request) {
@@ -33,21 +33,16 @@ public class AccommodationService {
         Accommodation entity = request.toEntity(host);
 
         // 태그 조회
-        Set<String> names = new HashSet<>();
-        names.add(request.getBuildingType());
-        names.add(request.getAccommodationType());
-        names.addAll(request.getAmenities());
-
-        Set<Hashtag> hashtags = hashtagRepository.findByNameIn(names);
-
-        Set<String> foundNames = hashtags.stream().map(Hashtag::getName).collect(Collectors.toSet());
+        Set<String> names = new HashSet<>(request.getFacilities());
+        Set<Facility> facilities = facilityRepository.findByNameIn(names);
+        Set<String> foundNames = facilities.stream().map(Facility::getName).collect(Collectors.toSet());
 
         if (names.stream().anyMatch(name -> !foundNames.contains(name))) {
-            throw new IllegalArgumentException("존재하지 않는 해시태그입니다");
+            throw new IllegalArgumentException("존재하지 않는 편의시설입니다");
         }
 
         // 숙소 태그 등록
-        entity.addAccommodationHashtags(hashtags);
+        entity.addAccommodationFacilities(facilities);
 
         // 첫 이용객 할인 적용 시
         if (entity.isInitialDiscountApplied()) {

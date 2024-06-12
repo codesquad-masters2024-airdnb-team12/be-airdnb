@@ -1,6 +1,8 @@
 package com.airbnb.domain.accommodation.dto.request;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
+import com.airbnb.domain.accommodation.entity.AccommodationType;
+import com.airbnb.domain.accommodation.entity.BuildingType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.global.validator.NoNullElements;
@@ -74,7 +76,7 @@ public class AccommodationCreateRequest {
 
     @NotNull
     @NoNullElements
-    private Set<String> amenities;     // 편의시설
+    private Set<String> facilities;     // 편의시설
 
     public Accommodation toEntity(Member host) {
         Address accommoAddress = Address.builder()
@@ -95,6 +97,8 @@ public class AccommodationCreateRequest {
                 .bed(bed)
                 .bath(bath)
                 .maxGuests(maxGuests)
+                .accommodationType(AccommodationType.valueOf(accommodationType))
+                .buildingType(BuildingType.valueOf(buildingType))
                 .description(description)
                 .costPerNight(costPerNight)
                 .initialDiscountApplied(initialDiscountApplied)

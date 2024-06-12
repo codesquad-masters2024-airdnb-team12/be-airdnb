@@ -3,11 +3,13 @@ package com.airbnb.accommodation.unit.service;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
+import com.airbnb.domain.accommodation.entity.AccommodationType;
+import com.airbnb.domain.accommodation.entity.BuildingType;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodation.service.AccommodationService;
-import com.airbnb.domain.hashtag.entity.Hashtag;
-import com.airbnb.domain.hashtag.entity.HashtagType;
-import com.airbnb.domain.hashtag.repository.HashtagRepository;
+import com.airbnb.domain.facility.entity.Facility;
+import com.airbnb.domain.facility.entity.FacilityType;
+import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
 import com.navercorp.fixturemonkey.FixtureMonkey;
@@ -43,7 +45,7 @@ class AccommodationServiceTest {
     AccommodationRepository accommodationRepository;
 
     @Mock
-    HashtagRepository hashtagRepository;
+    FacilityRepository facilityRepository;
 
     FixtureMonkey sut;
 
@@ -59,26 +61,20 @@ class AccommodationServiceTest {
     @Test
     void givenMemberIdAndAccommodationCreateRequest_whenCreateAccommodation_thenSaveAndReturnAccommodationResponse() {
         // given
-        AccommodationCreateRequest request = sut.giveMeOne(AccommodationCreateRequest.class);
+        AccommodationCreateRequest request = sut.giveMeBuilder(AccommodationCreateRequest.class)
+                .set("accommodationType", AccommodationType.APARTMENT.name())
+                .set("buildingType", BuildingType.ROOM.name())
+                .sample();
         Member member = mock(Member.class);
         Accommodation accommodation = request.toEntity(member);
 
-        Set<Hashtag> hashtags = new HashSet<>();
-        hashtags.add(sut.giveMeBuilder(Hashtag.class)
-                .set("name", request.getAccommodationType())
-                .set("type", HashtagType.ACCOMMODATION_TYPE)
-                .sample());
-        hashtags.add(sut.giveMeBuilder(Hashtag.class)
-                .set("name", request.getBuildingType())
-                .set("type", HashtagType.BUILDING_TYPE)
-                .sample());
-        hashtags.addAll(request.getAmenities().stream()
-                .map(a -> sut.giveMeBuilder(Hashtag.class).set("type", "AMENITY").set("name", a).sample())
+        Set<Facility> facilities = new HashSet<>(request.getFacilities().stream()
+                .map(f -> sut.giveMeBuilder(Facility.class).set("type", FacilityType.ESSENTIAL).set("name", f).sample())
                 .toList());
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(accommodationRepository.save(any(Accommodation.class))).willReturn(accommodation);
-        given(hashtagRepository.findByNameIn(anySet())).willReturn(Set.copyOf(hashtags));
+        given(facilityRepository.findByNameIn(anySet())).willReturn(Set.copyOf(facilities));
 
         // when
         AccommodationResponse accommodationResponse = accommodationService.create(member.getId(), request);

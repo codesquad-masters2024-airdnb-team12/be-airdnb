@@ -1,10 +1,10 @@
 package com.airbnb.domain.accommodation.entity;
 
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
-import com.airbnb.domain.accommodationHashtag.AccommodationHashtag;
+import com.airbnb.domain.accommodationFacility.AccommodationFacility;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.BaseTime;
-import com.airbnb.domain.hashtag.entity.Hashtag;
+import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.member.entity.Member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -62,9 +62,17 @@ public class Accommodation extends BaseTime {
     @Column(length = 1000)
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AccommodationType accommodationType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private BuildingType buildingType;
+
     @OneToMany(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
     @Column(nullable = false)
-    private Set<AccommodationHashtag> accommodationHashtags;
+    private Set<AccommodationFacility> accommodationFacilities;
 
     @OneToOne(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
     private AccommodationDiscount accommodationDiscount;
@@ -78,7 +86,7 @@ public class Accommodation extends BaseTime {
     private boolean monthlyDiscountApplied;
 
     @Builder
-    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, Set<AccommodationHashtag> accommodationHashtags, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
+    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
         this.host = host;
         this.name = name;
         this.address = address;
@@ -88,7 +96,9 @@ public class Accommodation extends BaseTime {
         this.bath = bath;
         this.maxGuests = maxGuests;
         this.description = description;
-        this.accommodationHashtags = accommodationHashtags == null ? new HashSet<>() : accommodationHashtags;
+        this.accommodationType = accommodationType;
+        this.buildingType = buildingType;
+        this.accommodationFacilities = accommodationFacilities == null ? new HashSet<>() : accommodationFacilities;
         this.accommodationDiscount = accommodationDiscount;
         this.costPerNight = costPerNight;
         this.initialDiscountApplied = initialDiscountApplied;
@@ -100,14 +110,14 @@ public class Accommodation extends BaseTime {
         this.accommodationDiscount = accommodationDiscount;
     }
 
-    public void addAccommodationHashtag(Hashtag hashtag) {
-        this.accommodationHashtags.add(AccommodationHashtag.builder()
+    public void addAccommodationFacility(Facility facility) {
+        this.accommodationFacilities.add(AccommodationFacility.builder()
                 .accommodation(this)
-                .hashtag(hashtag)
+                .facility(facility)
                 .build());
     }
 
-    public void addAccommodationHashtags(Set<Hashtag> hashtags) {
-        hashtags.forEach(this::addAccommodationHashtag);
+    public void addAccommodationFacilities(Set<Facility> facilities) {
+        facilities.forEach(this::addAccommodationFacility);
     }
 }
