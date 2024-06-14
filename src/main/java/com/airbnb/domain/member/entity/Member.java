@@ -70,6 +70,13 @@ public class Member extends BaseTime {
         return this;
     }
 
+    public Member update(OAuth2UserInfo oAuth2UserInfo) {
+        this.email = oAuth2UserInfo.email();
+        this.name = oAuth2UserInfo.name();
+        this.imgUrl = oAuth2UserInfo.imgUrl();
+        return this;
+    }
+
     public void setRole(Role role) {
         this.role = role;
     }

@@ -1,6 +1,5 @@
 package com.airbnb.global.auth.oauth2.user;
 
-import com.airbnb.domain.common.Role;
 import com.airbnb.domain.member.entity.Member;
 import java.util.Collection;
 import java.util.Collections;
