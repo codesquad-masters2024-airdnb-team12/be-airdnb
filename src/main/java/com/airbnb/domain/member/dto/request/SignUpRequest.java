@@ -3,16 +3,15 @@ package com.airbnb.domain.member.dto.request;
 import com.airbnb.domain.common.LoginType;
 import com.airbnb.domain.common.Role;
 import com.airbnb.domain.member.entity.Member;
-import com.airbnb.global.security.PasswordEncoder;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -33,18 +32,14 @@ public class SignUpRequest {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$", // 숫자, 영문, 특수문자 1개 이상 포함
         message = "비밀번호 형식이 올바르지 않습니다.")
     private String password;
-    private String bankName;
-    private String accountNumber;
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
             .email(email)
             .loginType(LoginType.DEFALUT) // 일반 email 로그인
-            .roles(new ArrayList<>(Role.GUEST.ordinal())) // 게스트(default) 권한 부여
+            .role(Role.GUEST) // 게스트(default) 권한 부여
             .name(name)
             .encodedPassword(passwordEncoder.encode(password))
-            .bankName(bankName)
-            .accountNumber(accountNumber)
             .build();
     }
 }
