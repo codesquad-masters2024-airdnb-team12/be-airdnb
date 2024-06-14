@@ -1,6 +1,6 @@
 package com.airbnb.domain.accommodationDiscount;
 
-import com.airbnb.domain.accommodation.Accommodation;
+import com.airbnb.domain.accommodation.entity.Accommodation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,7 +17,8 @@ public class AccommodationDiscount {
     @Column(name = "accommodation_discount_id")
     private Long id;
 
-    @OneToOne(mappedBy = "accommodationDiscount", fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accommodation_id")
     private Accommodation accommodation;
     private int remainDiscountCnt;
 
