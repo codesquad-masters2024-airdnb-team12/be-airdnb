@@ -55,4 +55,31 @@ public class BookingService {
         bookingRepository.findAll().stream().filter(booking -> booking.needChangeCompletedStatus(today))
             .forEach(booking -> booking.changeStatus(COMPLETED));
     }
+
+    @Transactional
+    public BookingResponse approve(Long bookingId) {
+        Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
+        AmountResult amountResult = amountCalculationService.getAmountResult(targetBooking);
+        Payment newPayment = Payment.builder().booking(targetBooking).amountResult(amountResult).build();
+
+        targetBooking.approve(newPayment);
+
+        return BookingResponse.from(targetBooking);
+    }
+
+    @Transactional
+    public BookingResponse cancel(Long bookingId) {
+        Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
+        targetBooking.cancel();
+
+        return BookingResponse.from(targetBooking);
+    }
+
+    @Transactional
+    public BookingResponse reject(Long bookingId) {
+        Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
+        targetBooking.reject();;
+
+        return BookingResponse.from(targetBooking);
+    }
 }

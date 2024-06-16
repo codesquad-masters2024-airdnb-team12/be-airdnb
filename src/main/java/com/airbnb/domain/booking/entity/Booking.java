@@ -1,6 +1,7 @@
 package com.airbnb.domain.booking.entity;
 
 import static com.airbnb.domain.booking.entity.BookingStatus.*;
+import static com.airbnb.domain.payment.entity.PaymentStatus.WITHDRAWN;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.BaseTime;
@@ -72,5 +73,20 @@ public class Booking extends BaseTime {
 
     public boolean needChangeCompletedStatus(LocalDate today) {
         return status == USING && today.isAfter(checkOut);
+    }
+
+    public void approve(Payment payment) {
+        this.status = APPROVED;
+        this.payment = payment;
+    }
+
+    public void cancel() {
+        this.status = CANCELED;
+        this.payment.changeStatus(WITHDRAWN);
+    }
+
+    public void reject() {
+        this.status = BookingStatus.REJECTED;
+        this.payment.changeStatus(WITHDRAWN);
     }
 }
