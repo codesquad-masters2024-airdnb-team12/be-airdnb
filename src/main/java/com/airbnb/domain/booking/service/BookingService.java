@@ -41,4 +41,10 @@ public class BookingService {
 
         return BookingResponse.from(newBooking);
     }
+
+    public BookingListResponse getAllByGuestIdAndStatus(Long guestId, BookingStatus status) {
+        List<Booking> bookings = bookingRepository.findByGuestIdAndStatus(guestId, status);
+        return BookingListResponse.from(bookings);
+    }
+
 }
