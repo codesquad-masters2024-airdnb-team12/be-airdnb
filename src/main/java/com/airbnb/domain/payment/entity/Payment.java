@@ -1,9 +1,10 @@
-package com.airbnb.domain.payment;
+package com.airbnb.domain.payment.entity;
 
-import com.airbnb.domain.booking.Booking;
+import com.airbnb.domain.booking.entity.Booking;
 import com.airbnb.domain.common.BaseTime;
-import com.airbnb.domain.policy.DiscountPolicy;
-import com.airbnb.domain.policy.FeePolicy;
+import com.airbnb.domain.payment.dto.AmountResult;
+import com.airbnb.domain.policy.entity.DiscountPolicy;
+import com.airbnb.domain.policy.entity.FeePolicy;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,35 +30,46 @@ public class Payment extends BaseTime {
     private DiscountPolicy discountPolicy;
 
     @Enumerated(EnumType.STRING)
-    @Column(updatable = false)
+    @Column(nullable = false)
     private PaymentStatus status;
 
     @Enumerated(EnumType.STRING)
-    @Column(updatable = false)
     private Card card;
 
     @Column(updatable = false)
     private int totalAmount;
 
     @Column(updatable = false)
-    private int pureAmount;
+    private int feeAmount;
 
     @Column(updatable = false)
     private int discountAmount;
 
     @Column(updatable = false)
-    private int feeAmount;
+    private int finalAmount;
 
     @Builder
-    private Payment(Booking booking, FeePolicy feePolicy, DiscountPolicy discountPolicy, PaymentStatus status, Card card, int totalAmount, int pureAmount, int discountAmount, int feeAmount) {
+    private Payment(Booking booking, AmountResult amountResult) {
+        this.booking = booking;
+        this.feePolicy = amountResult.getFeePolicy();
+        this.discountPolicy = amountResult.getDiscountPolicy();
+        this.status = PaymentStatus.PENDING;
+        this.totalAmount = amountResult.getTotalAmount();
+        this.feeAmount = amountResult.getGuestFeeAmount();
+        this.discountAmount = amountResult.getDiscountAmount();
+        this.finalAmount = amountResult.getFinalAmount();
+    }
+
+    @Builder
+    private Payment(Booking booking, FeePolicy feePolicy, DiscountPolicy discountPolicy, PaymentStatus status, Card card, int totalAmount, int feeAmount, int discountAmount, int finalAmount) {
         this.booking = booking;
         this.feePolicy = feePolicy;
         this.discountPolicy = discountPolicy;
         this.status = status;
         this.card = card;
         this.totalAmount = totalAmount;
-        this.pureAmount = pureAmount;
-        this.discountAmount = discountAmount;
         this.feeAmount = feeAmount;
+        this.discountAmount = discountAmount;
+        this.finalAmount = finalAmount;
     }
 }

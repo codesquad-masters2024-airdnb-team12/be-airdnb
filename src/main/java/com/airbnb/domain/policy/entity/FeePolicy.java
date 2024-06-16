@@ -1,7 +1,8 @@
-package com.airbnb.domain.policy;
+package com.airbnb.domain.policy.entity;
 
 import com.airbnb.domain.common.BaseTime;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,14 +20,14 @@ public class FeePolicy extends BaseTime {
     private double guestFeeRate;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @Builder
-    private FeePolicy(double hostFeeRate, double guestFeeRate, LocalDateTime startTime, LocalDateTime endTime) {
+    private FeePolicy(double hostFeeRate, double guestFeeRate, LocalDate startDate, LocalDate endDate) {
         this.hostFeeRate = hostFeeRate;
         this.guestFeeRate = guestFeeRate;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }

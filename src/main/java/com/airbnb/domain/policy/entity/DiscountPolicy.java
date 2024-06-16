@@ -1,7 +1,8 @@
-package com.airbnb.domain.policy;
+package com.airbnb.domain.policy.entity;
 
 import com.airbnb.domain.common.BaseTime;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -21,16 +22,16 @@ public class DiscountPolicy extends BaseTime {
     private double monthlyDiscountRate;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     @Builder
-    private DiscountPolicy(int initialDiscountCnt, double initialDiscountRate, double weeklyDiscountRate, double monthlyDiscountRate, LocalDateTime startTime, LocalDateTime endTime) {
+    private DiscountPolicy(int initialDiscountCnt, double initialDiscountRate, double weeklyDiscountRate, double monthlyDiscountRate, LocalDate startDate, LocalDate endDate) {
         this.initialDiscountCnt = initialDiscountCnt;
         this.initialDiscountRate = initialDiscountRate;
         this.weeklyDiscountRate = weeklyDiscountRate;
         this.monthlyDiscountRate = monthlyDiscountRate;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }
