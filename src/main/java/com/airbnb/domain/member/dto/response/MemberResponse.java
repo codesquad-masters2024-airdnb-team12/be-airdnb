@@ -10,11 +10,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberResponse {
 
-    private final String email;
-    private final String imgUrl;
-    private final String name;
+    private String email;
+    private String imgUrl;
+    private String name;
 
-    public static MemberResponse of(Member member) {
+    public static MemberResponse from(Member member) {
         return MemberResponse.builder()
             .email(member.getEmail())
             .name(member.getName())

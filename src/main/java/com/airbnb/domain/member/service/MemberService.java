@@ -28,27 +28,27 @@ public class MemberService {
             throw new IllegalArgumentException("동일한 이메일이 이미 존재합니다.");
         }
 
-        Member savedMember = memberRepository.save(signUpRequest.toEntity(passwordEncoder));
-        return MemberResponse.of(savedMember);
+        Member newMember = memberRepository.save(signUpRequest.toEntity(passwordEncoder));
+        return MemberResponse.from(newMember);
     }
 
     public MemberListResponse getAll() {
         List<Member> allMembers = memberRepository.findAll();
-        return MemberListResponse.of(allMembers);
+        return MemberListResponse.from(allMembers);
     }
 
     public MemberResponse getById(Long targetId) {
         Member targetMember = memberRepository.findById(targetId)
             .orElseThrow(() -> new IllegalArgumentException("해당 회원정보가 없습니다."));
 
-        return MemberResponse.of(targetMember);
+        return MemberResponse.from(targetMember);
     }
 
     public MemberResponse getByEmail(String email) {
         Member targetMember = memberRepository.findByEmail(email)
             .orElseThrow(() -> new IllegalArgumentException("해당 회원정보가 없습니다."));
 
-        return MemberResponse.of(targetMember);
+        return MemberResponse.from(targetMember);
     }
 
     @Transactional
@@ -57,7 +57,7 @@ public class MemberService {
             .orElseThrow(() -> new IllegalArgumentException("해당 회원정보가 없습니다."));
 
         Member updatedMember = targetMember.update(updateRequest, passwordEncoder);
-        return MemberResponse.of(updatedMember);
+        return MemberResponse.from(updatedMember);
     }
 
     @Transactional
