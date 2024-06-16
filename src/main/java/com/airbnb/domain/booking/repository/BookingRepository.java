@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByGuestIdAndStatus(Long guestId, BookingStatus status);
+
+    List<Booking> findByAccommodationHostIdAndStatus(Long hostId, BookingStatus status);
 }

@@ -47,6 +47,11 @@ public class BookingService {
         return BookingListResponse.from(bookings);
     }
 
+    public BookingListResponse getAllByHostIdAndStatus(Long hostId, BookingStatus status) {
+        List<Booking> bookings = bookingRepository.findByAccommodationHostIdAndStatus(hostId, status);
+        return BookingListResponse.from(bookings);
+    }
+
     @Transactional
     public void updateStatusByDate() {
         LocalDate today = LocalDate.now();
