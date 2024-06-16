@@ -47,4 +47,12 @@ public class BookingService {
         return BookingListResponse.from(bookings);
     }
 
+    @Transactional
+    public void updateStatusByDate() {
+        LocalDate today = LocalDate.now();
+        bookingRepository.findAll().stream().filter(booking -> booking.needChangeUsingStatus(today))
+            .forEach(booking -> booking.changeStatus(USING));
+        bookingRepository.findAll().stream().filter(booking -> booking.needChangeCompletedStatus(today))
+            .forEach(booking -> booking.changeStatus(COMPLETED));
+    }
 }
