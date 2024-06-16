@@ -11,7 +11,8 @@ public enum BookingStatus {
     CANCELED("예약 취소"),
     REJECTED("예약 거절"),
     CONFIRMED("예약 확정 - 결제 완료"),
-
+    USING("이용 중"),
+    COMPLETED("이용 완료"),
     ;
 
     private final String description;

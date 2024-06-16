@@ -16,7 +16,8 @@ public class PaymentResponse {
     private PaymentStatus status;
     private Card card;
     private int totalAmount;
-    private int feeAmount;
+    private int hostFeeAmount;
+    private int guestFeeAmount;
     private int discountAmount;
     private int finalAmount;
 
@@ -26,7 +27,8 @@ public class PaymentResponse {
             .status(payment.getStatus())
             .card(payment.getCard())
             .totalAmount(payment.getTotalAmount())
-            .feeAmount(payment.getFeeAmount())
+            .hostFeeAmount(payment.getHostFeeAmount())
+            .guestFeeAmount(payment.getGuestFeeAmount())
             .discountAmount(payment.getDiscountAmount())
             .finalAmount(payment.getFinalAmount())
             .build();

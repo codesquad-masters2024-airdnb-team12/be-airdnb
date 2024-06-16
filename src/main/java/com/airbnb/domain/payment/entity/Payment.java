@@ -40,7 +40,10 @@ public class Payment extends BaseTime {
     private int totalAmount;
 
     @Column(updatable = false)
-    private int feeAmount;
+    private int hostFeeAmount;
+
+    @Column(updatable = false)
+    private int guestFeeAmount;
 
     @Column(updatable = false)
     private int discountAmount;
@@ -55,21 +58,32 @@ public class Payment extends BaseTime {
         this.discountPolicy = amountResult.getDiscountPolicy();
         this.status = PaymentStatus.PENDING;
         this.totalAmount = amountResult.getTotalAmount();
-        this.feeAmount = amountResult.getGuestFeeAmount();
+        this.hostFeeAmount = amountResult.getHostFeeAmount();
+        this.guestFeeAmount = amountResult.getGuestFeeAmount();
         this.discountAmount = amountResult.getDiscountAmount();
         this.finalAmount = amountResult.getFinalAmount();
     }
 
     @Builder
-    private Payment(Booking booking, FeePolicy feePolicy, DiscountPolicy discountPolicy, PaymentStatus status, Card card, int totalAmount, int feeAmount, int discountAmount, int finalAmount) {
+    private Payment(Booking booking, FeePolicy feePolicy, DiscountPolicy discountPolicy, PaymentStatus status, Card card, int totalAmount, int hostFeeAmount, int guestFeeAmount, int discountAmount, int finalAmount) {
         this.booking = booking;
         this.feePolicy = feePolicy;
         this.discountPolicy = discountPolicy;
         this.status = status;
         this.card = card;
         this.totalAmount = totalAmount;
-        this.feeAmount = feeAmount;
+        this.hostFeeAmount = hostFeeAmount;
+        this.guestFeeAmount = guestFeeAmount;
         this.discountAmount = discountAmount;
         this.finalAmount = finalAmount;
+    }
+
+    public void execute(Card card) {
+        this.status = PaymentStatus.COMPLETED;
+        this.card = card;
+    }
+
+    public void changeStatus(PaymentStatus status) {
+        this.status = status;
     }
 }
