@@ -22,7 +22,7 @@ public class AccommodationResponse {
     private int maxGuests;
     private int costPerNight;
 
-    public static AccommodationResponse from(Accommodation accommodation) {
+    public static AccommodationResponse of(Accommodation accommodation) {
         return AccommodationResponse.builder()
                 .id(accommodation.getId())
                 .name(accommodation.getName())

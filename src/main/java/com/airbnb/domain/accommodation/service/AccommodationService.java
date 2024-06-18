@@ -1,7 +1,7 @@
 package com.airbnb.domain.accommodation.service;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
-import com.airbnb.domain.accommodation.dto.request.AccommodationInfoRequest;
+import com.airbnb.domain.accommodation.dto.response.AccommodationPageResponse;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
@@ -11,6 +11,8 @@ import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,11 @@ public class AccommodationService {
 
         Accommodation accommodation = accommodationRepository.save(entity);
 
-        return AccommodationResponse.from(accommodation);
+        return AccommodationResponse.of(accommodation);
+    }
+
+    public AccommodationPageResponse getPage(Pageable pageable) {
+        Page<Accommodation> accommodationPage = accommodationRepository.findAll(pageable);
+        return AccommodationPageResponse.of(accommodationPage);
     }
 }

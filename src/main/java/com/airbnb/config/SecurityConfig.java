@@ -31,9 +31,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // TODO: 필터링하지 않을 로직 정리
     private static final String[] AUTH_WHITE_LIST = {
         "/h2-console/**",
-        "/",
+        "/**",
         "/auth/**"
     };
 

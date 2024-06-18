@@ -1,5 +1,8 @@
 package com.airbnb.accommodation.unit.service;
 
+import com.airbnb.domain.accommodation.dto.response.AccommodationPageResponse;
+import com.airbnb.domain.common.Address;
+import com.airbnb.domain.common.Coordinate;
 import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
 import com.airbnb.domain.accommodation.dto.request.AccommodationInfoRequest;
@@ -23,7 +26,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -83,5 +88,48 @@ class AccommodationServiceTest {
 
         // then
         assertThat(accommodationResponse).isNotNull();
+    }
+
+    @DisplayName("숙소 목록 조회 요청이 들어오면 숙소를 50개 조회해 숙소 페이지를 응답한다.")
+    @Test
+    void givenAccommodationGetListRequest_whenGetAccommodationList_thenReturnAccommodationPageResponse() {
+        // given
+        int page = 1;
+        int size = 50;
+        String sort = "createdAt.DESC";
+
+        Coordinate coordinate = mock(Coordinate.class);
+
+        Accommodation accommodation = Accommodation.builder()
+                .host(mock(Member.class))
+                .name("Sample Accommodation")
+                .address(mock(Address.class))
+                .latitude(coordinate.getLatitude())
+                .longitude(coordinate.getLongitude())
+                .bedroom(2)
+                .bed(2)
+                .bath(1)
+                .maxGuests(4)
+                .description("Sample description")
+                .accommodationType(AccommodationType.HOTEL)
+                .buildingType(BuildingType.ALL)
+                .accommodationFacilities(new HashSet<>())
+                .accommodationInfos(new HashSet<>())
+                .costPerNight(100000)
+                .initialDiscountApplied(true)
+                .weeklyDiscountApplied(false)
+                .monthlyDiscountApplied(true)
+                .build();
+
+        Page<Accommodation> accommodationPage = new PageImpl<>(Collections.nCopies(size, accommodation));
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by(sort));
+
+        given(accommodationRepository.findAll(pageable)).willReturn(accommodationPage);
+
+        // when
+        AccommodationPageResponse response = accommodationService.getPage(pageable);
+
+        // then
+        assertThat(response.getAccommodationResponses().getContent()).hasSize(size);
     }
 }
