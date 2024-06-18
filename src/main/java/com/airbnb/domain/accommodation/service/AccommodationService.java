@@ -1,11 +1,14 @@
 package com.airbnb.domain.accommodation.service;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.airbnb.domain.accommodation.dto.response.AccommodationPageResponse;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
+import com.airbnb.domain.accommodationFacility.AccommodationFacility;
+import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
@@ -16,9 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +72,22 @@ public class AccommodationService {
     public AccommodationPageResponse getPage(Pageable pageable) {
         Page<Accommodation> accommodationPage = accommodationRepository.findAll(pageable);
         return AccommodationPageResponse.of(accommodationPage);
+    }
+
+    public AccommodationDetailResponse getDetail(Long accommodationId) {
+        Accommodation accommodation = accommodationRepository.findDetailById(accommodationId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 숙소입니다."));
+
+        Map<String, List<String>> groupedFacilities = Stream.concat(
+                accommodation.getAccommodationFacilities().stream()
+                        .map(af -> new AbstractMap.SimpleEntry<>(af.getFacility().getType().getDescription(), af.getFacility().getName())),
+                accommodation.getAccommodationCustomizedFacilities().stream()
+                        .map(acf -> new AbstractMap.SimpleEntry<>(acf.getType().getDescription(), acf.getName()))
+        ).collect(Collectors.groupingBy(
+                Map.Entry::getKey,
+                Collectors.mapping(Map.Entry::getValue, Collectors.toList())
+        ));
+
+        return AccommodationDetailResponse.of(accommodation, groupedFacilities);
     }
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AccommodationInfo {
+public class AccommodationCustomizedFacility {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,7 @@ public class AccommodationInfo {
     private FacilityType type;
 
     @Builder
-    private AccommodationInfo(Accommodation accommodation, String name, FacilityType type) {
+    private AccommodationCustomizedFacility(Accommodation accommodation, String name, FacilityType type) {
         this.accommodation = accommodation;
         this.name = name;
         this.type = type;

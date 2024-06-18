@@ -5,7 +5,7 @@ import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
 import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
-import com.airbnb.domain.accommodation.dto.request.AccommodationInfoRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationFacilityInfoRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.entity.AccommodationType;
@@ -70,7 +70,7 @@ class AccommodationServiceTest {
         AccommodationCreateRequest request = sut.giveMeBuilder(AccommodationCreateRequest.class)
                 .set("accommodationType", AccommodationType.APARTMENT.name())
                 .set("buildingType", BuildingType.ROOM.name())
-                .set("info", Set.of(new AccommodationInfoRequest("코딩 가능", FacilityType.ACTIVITY_LEISURE.name())))
+                .set("info", Set.of(new AccommodationFacilityInfoRequest("코딩 가능", FacilityType.ACTIVITY_LEISURE.name())))
                 .sample();
         Member member = mock(Member.class);
         Accommodation accommodation = request.toEntity(member);
@@ -114,7 +114,7 @@ class AccommodationServiceTest {
                 .accommodationType(AccommodationType.HOTEL)
                 .buildingType(BuildingType.ALL)
                 .accommodationFacilities(new HashSet<>())
-                .accommodationInfos(new HashSet<>())
+                .accommodationCustomizedFacilities(new HashSet<>())
                 .costPerNight(100000)
                 .initialDiscountApplied(true)
                 .weeklyDiscountApplied(false)

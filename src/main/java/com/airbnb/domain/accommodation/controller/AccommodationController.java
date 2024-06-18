@@ -1,6 +1,7 @@
 package com.airbnb.domain.accommodation.controller;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.response.AccommodationDetailResponse;
 import com.airbnb.domain.accommodation.dto.response.AccommodationPageResponse;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.service.AccommodationService;
@@ -47,6 +48,13 @@ public class AccommodationController {
 
         return ResponseEntity.ok(
                 accommodationService.getPage(pageable)
+        );
+    }
+
+    @GetMapping("/{accommodationId}")
+    public ResponseEntity<AccommodationDetailResponse> getDetail(@PathVariable Long accommodationId) {
+        return ResponseEntity.ok(
+                accommodationService.getDetail(accommodationId)
         );
     }
 }

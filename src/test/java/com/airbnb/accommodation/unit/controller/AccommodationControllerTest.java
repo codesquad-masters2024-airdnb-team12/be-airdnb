@@ -120,7 +120,7 @@ class AccommodationControllerTest {
                 .accommodationType(AccommodationType.HOTEL)
                 .buildingType(BuildingType.ALL)
                 .accommodationFacilities(new HashSet<>())
-                .accommodationInfos(new HashSet<>())
+                .accommodationCustomizedFacilities(new HashSet<>())
                 .costPerNight(100000)
                 .initialDiscountApplied(true)
                 .weeklyDiscountApplied(false)
