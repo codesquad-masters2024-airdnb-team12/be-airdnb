@@ -1,4 +1,4 @@
-package com.airbnb.domain.AccommodationInfo.entity;
+package com.airbnb.domain.AccommodationCustomizedFacility.entity;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.FacilityType;

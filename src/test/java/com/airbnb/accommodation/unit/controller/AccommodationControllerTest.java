@@ -1,6 +1,7 @@
 package com.airbnb.accommodation.unit.controller;
 
 import com.airbnb.domain.accommodation.controller.AccommodationController;
+import com.airbnb.domain.accommodation.controller.HostAccommodationController;
 import com.airbnb.domain.accommodation.dto.response.AccommodationPageResponse;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
@@ -43,13 +44,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @MockBean(JpaMetamodelMappingContext.class)
-@WebMvcTest(controllers = AccommodationController.class,
+@WebMvcTest(controllers = {AccommodationController.class, HostAccommodationController.class},
         excludeAutoConfiguration = {SecurityAutoConfiguration.class, OAuth2ClientAutoConfiguration.class},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtAuthFilter.class)})
 class AccommodationControllerTest {
-
-    private static final String url = "/accommodations";
 
     private final MockMvc mvc;
     private final ObjectMapper mapper;
@@ -85,7 +84,7 @@ class AccommodationControllerTest {
 
         // when
         ResultActions result = mvc.perform(
-                post(url)
+                post("/host/accommodations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(request))
         );
@@ -134,7 +133,7 @@ class AccommodationControllerTest {
 
         // when
         ResultActions result = mvc.perform(
-                get(url + "?page=" + page + "&size=" + size + "&sort=" + sort)
+                get("/accommodations?page=" + page + "&size=" + size + "&sort=" + sort)
         );
 
         // then

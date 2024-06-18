@@ -1,6 +1,6 @@
 package com.airbnb.domain.accommodation.entity;
 
-import com.airbnb.domain.AccommodationInfo.entity.AccommodationCustomizedFacility;
+import com.airbnb.domain.AccommodationCustomizedFacility.entity.AccommodationCustomizedFacility;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
 import com.airbnb.domain.accommodationFacility.AccommodationFacility;
 import com.airbnb.domain.common.Address;
@@ -128,7 +128,7 @@ public class Accommodation extends BaseTime {
         facilities.forEach(this::addAccommodationFacility);
     }
 
-    public void addAccommodationInfos(Set<AccommodationCustomizedFacility> accommodationCustomizedFacilities) {
+    public void addAccommodationCustomizedFacilities(Set<AccommodationCustomizedFacility> accommodationCustomizedFacilities) {
         this.accommodationCustomizedFacilities.addAll(accommodationCustomizedFacilities);
     }
 }

@@ -1,14 +1,10 @@
 package com.airbnb.domain.accommodation.service;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
-import com.airbnb.domain.accommodation.dto.response.AccommodationDetailResponse;
-import com.airbnb.domain.accommodation.dto.response.AccommodationPageResponse;
-import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
+import com.airbnb.domain.accommodation.dto.response.*;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
-import com.airbnb.domain.accommodationFacility.AccommodationFacility;
-import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
@@ -51,7 +47,7 @@ public class AccommodationService {
         entity.addAccommodationFacilities(facilities);
 
         // 숙소 정보 등록
-        entity.addAccommodationInfos(
+        entity.addAccommodationCustomizedFacilities(
                 request.getInfo().stream().map(i -> i.toEntity(entity))
                         .collect(Collectors.toSet())
         );
@@ -89,5 +85,24 @@ public class AccommodationService {
         ));
 
         return AccommodationDetailResponse.of(accommodation, groupedFacilities);
+    }
+
+    public AccommodationOverview getOverview(Long hostId, Long accommodationId) {
+        AccommodationOverview accommodationOverview = accommodationRepository.findOverviewById(accommodationId)
+                .orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
+
+        if (!accommodationOverview.getHost().getId().equals(hostId)) {
+            throw new IllegalStateException("자신의 숙소만 조회할 수 있습니다.");
+        }
+
+        return accommodationOverview;
+    }
+
+    public AccommodationFacilities getFacilities(Long hostId, Long accommodationId) {
+        return null;
+    }
+
+    public AccommodationCost getCosts(Long hostId, Long accommodationId) {
+        return null;
     }
 }

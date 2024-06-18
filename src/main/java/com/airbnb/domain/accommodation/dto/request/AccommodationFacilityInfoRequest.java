@@ -1,6 +1,6 @@
 package com.airbnb.domain.accommodation.dto.request;
 
-import com.airbnb.domain.AccommodationInfo.entity.AccommodationCustomizedFacility;
+import com.airbnb.domain.AccommodationCustomizedFacility.entity.AccommodationCustomizedFacility;
 import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import jakarta.validation.constraints.NotBlank;
