@@ -2,40 +2,35 @@ spring:
   application:
     name: airbnb
 
-  # h2 console
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+  profiles:
+    active: dev
+    # oauth2
+    include: oauth
 
-  # datasource - h2 (for test)
+  # datasource
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/airbnb
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${datasource.url}
+    username: ${datasource.user}
+    password: ${datasource.pwd}
 
   # ddl-auto
   jpa:
     hibernate:
-      ddl-auto: create # create create-drop update validate none(default/ on production)
+      ddl-auto: ${ddl-auto} # create create-drop update validate none(default/ on production)
 
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
-  # data.sql operate after hibernate init (not on production)
-  defer-datasource-initialization: true
+        show_sql: ${show-sql}
+        format_sql: ${format-sql}
 
+    # data.sql operate after hibernate init (not on production)
+    defer-datasource-initialization: ${defer-datasource-initialization}
 
-  # oauth2
-  profiles:
-    include: oauth
-    
   # sql init (not on production)
   sql:
     init:
-      mode: always
+      mode: ${sql-init-mode}
 
 # Logging level
 logging:
@@ -46,8 +41,8 @@ logging:
 # url prefix
 server:
   servlet:
-    context-path: /api/v1
+    context-path: ${url-prefix}
 
 pwd:
   encrypt:
-    secret-key:
+    secret-key: ${pwd-encrypt-secret-key}
