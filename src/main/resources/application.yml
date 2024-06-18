@@ -23,6 +23,7 @@ spring:
       hibernate:
         show_sql: ${show-sql}
         format_sql: ${format-sql}
+      dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
 
     # data.sql operate after hibernate init (not on production)
     defer-datasource-initialization: ${defer-datasource-initialization}
@@ -43,6 +44,7 @@ server:
   servlet:
     context-path: ${url-prefix}
 
-pwd:
-  encrypt:
-    secret-key: ${pwd-encrypt-secret-key}
+jwt:
+  access-token:
+    secret: ${jwt-access-token.secret}
+    expiration: ${jwt-access-token.expiration}

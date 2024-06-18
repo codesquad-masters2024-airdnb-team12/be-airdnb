@@ -4,11 +4,11 @@ import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.entity.AccommodationType;
 import com.airbnb.domain.accommodation.entity.BuildingType;
 import com.airbnb.domain.common.Address;
+import com.airbnb.domain.common.Coordinate;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.global.validator.NoNullElements;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.springframework.data.geo.Point;
 
 import java.util.Set;
 
@@ -30,13 +30,8 @@ public class AccommodationCreateRequest {
     private String address;
     private String detailedAddress;
 
-    @Min(value = -90)
-    @Max(value = 90)
-    private double latitude;    // 위도
-
-    @Min(value = -180)
-    @Max(value = 180)
-    private double longitude;   // 경도
+    @NotNull
+    private Coordinate coordinate;
 
     @Min(1)
     @Max(20)
@@ -89,7 +84,8 @@ public class AccommodationCreateRequest {
                 .host(host)
                 .name(name)
                 .address(accommoAddress)
-                .coordinate(new Point(longitude, latitude)) // x가 경도, y가 위도
+                .longitude(coordinate.getLongitude())
+                .latitude(coordinate.getLatitude())
                 .bedroom(bedroom)
                 .bed(bed)
                 .bath(bath)

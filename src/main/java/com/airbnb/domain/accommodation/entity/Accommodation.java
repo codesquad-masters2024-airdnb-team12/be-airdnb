@@ -7,6 +7,7 @@ import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.BaseTime;
 import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.member.entity.Member;
+import com.airbnb.global.util.GeometryUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -14,7 +15,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -41,7 +42,7 @@ public class Accommodation extends BaseTime {
     @Column(nullable = false)
     private Address address;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "POINT SRID 4326", nullable = false)
     private Point coordinate;
 
     @Min(1)
@@ -91,11 +92,11 @@ public class Accommodation extends BaseTime {
     private boolean monthlyDiscountApplied;
 
     @Builder
-    private Accommodation(Member host, String name, Address address, Point coordinate, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, Set<AccommodationInfo> accommodationInfos, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
+    private Accommodation(Member host, String name, Address address, double longitude, double latitude, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, Set<AccommodationInfo> accommodationInfos, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
         this.host = host;
         this.name = name;
         this.address = address;
-        this.coordinate = coordinate;
+        this.coordinate = GeometryUtil.createPoint(longitude, latitude);
         this.bedroom = bedroom;
         this.bed = bed;
         this.bath = bath;

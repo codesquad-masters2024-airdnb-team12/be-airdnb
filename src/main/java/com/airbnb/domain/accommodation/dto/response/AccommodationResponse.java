@@ -2,10 +2,10 @@ package com.airbnb.domain.accommodation.dto.response;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.Address;
+import com.airbnb.domain.common.Coordinate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.geo.Point;
 
 @Getter
 @Builder
@@ -15,7 +15,7 @@ public class AccommodationResponse {
     private Long id;
     private String name;
     private Address address;
-    private Point coordinate;
+    private Coordinate coordinate;
     private int bedroom;
     private int bed;
     private int bath;
@@ -27,7 +27,7 @@ public class AccommodationResponse {
                 .id(accommodation.getId())
                 .name(accommodation.getName())
                 .address(accommodation.getAddress())
-                .coordinate(accommodation.getCoordinate())
+                .coordinate(Coordinate.of(accommodation.getCoordinate()))
                 .bedroom(accommodation.getBedroom())
                 .bed(accommodation.getBed())
                 .bath(accommodation.getBath())
