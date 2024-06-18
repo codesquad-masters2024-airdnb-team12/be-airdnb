@@ -66,22 +66,19 @@ public class BookingService {
 
     @Transactional
     public void updateStatusByCheckIn() {
-        LocalDate today = LocalDate.now();
-        bookingRepository.findByCheckInEqualsAndStatus(today, CONFIRMED)
+        bookingRepository.findByCheckInEqualsAndStatus(LocalDate.now(), CONFIRMED)
             .forEach(booking -> booking.changeStatus(USING));
     }
 
     @Transactional
     public void updateStatusByCheckOut() {
-        LocalDate today = LocalDate.now();
-        bookingRepository.findByCheckOutEqualsAndStatus(today, USING)
+        bookingRepository.findByCheckOutEqualsAndStatus(LocalDate.now(), USING)
             .forEach(booking -> booking.changeStatus(COMPLETED));
     }
 
     @Transactional
     public BookingResponse approve(Long bookingId) {
         Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-
         targetBooking.approve();
 
         return BookingResponse.from(targetBooking);
@@ -98,7 +95,7 @@ public class BookingService {
     @Transactional
     public BookingResponse reject(Long bookingId) {
         Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-        targetBooking.reject();;
+        targetBooking.reject();
 
         return BookingResponse.from(targetBooking);
     }
@@ -109,5 +106,4 @@ public class BookingService {
         DiscountPolicy discountPolicy = policyService.getDiscountPolicyByDate(bookingCreatedDate);
         return amountCalculationUtil.getAmountResult(booking, feePolicy, discountPolicy);
     }
-
 }
