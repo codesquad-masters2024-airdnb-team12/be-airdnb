@@ -36,7 +36,7 @@ public class SignUpRequest {
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
             .email(email)
-            .loginType(LoginType.DEFALUT) // 일반 email 로그인
+            .loginType(LoginType.DEFAULT) // 일반 email 로그인
             .role(Role.GUEST) // 게스트(default) 권한 부여
             .name(name)
             .encodedPassword(passwordEncoder.encode(password))
