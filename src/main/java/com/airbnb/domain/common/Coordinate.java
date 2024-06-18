@@ -13,12 +13,12 @@ import org.locationtech.jts.geom.Point;
 @AllArgsConstructor
 public class Coordinate {
 
-    @Min(-90)
-    @Max(90)
-    private double longitude;   // 경도
-
     @Min(-180)
     @Max(180)
+    private double longitude;   // 경도
+
+    @Min(-90)
+    @Max(90)
     private double latitude;   // 위도
 
     public static Coordinate of(Point point) {
