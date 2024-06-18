@@ -31,6 +31,9 @@ public class BookingCreateRequest {
     @Max(5)
     private int infants;
 
+    @NotNull
+    private String cardName;
+
     public Booking toEntity(Member guest, Accommodation accommodation) {
         return Booking.builder()
             .guest(guest)

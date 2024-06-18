@@ -1,7 +1,8 @@
 package com.airbnb.domain.booking.entity;
 
 import static com.airbnb.domain.booking.entity.BookingStatus.*;
-import static com.airbnb.domain.payment.entity.PaymentStatus.WITHDRAWN;
+import static com.airbnb.domain.payment.entity.PaymentStatus.*;
+import static com.airbnb.domain.payment.entity.PaymentStatus.COMPLETED;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.BaseTime;
@@ -46,7 +47,8 @@ public class Booking extends BaseTime {
     @Column(nullable = false)
     private BookingStatus status;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
@@ -67,17 +69,9 @@ public class Booking extends BaseTime {
         this.status = status;
     }
 
-    public boolean needChangeUsingStatus(LocalDate today) {
-        return status == CONFIRMED && today.isAfter(checkIn) && today.isBefore(checkOut);
-    }
-
-    public boolean needChangeCompletedStatus(LocalDate today) {
-        return status == USING && today.isAfter(checkOut);
-    }
-
-    public void approve(Payment payment) {
-        this.status = APPROVED;
-        this.payment = payment;
+    public void approve() {
+        this.status = CONFIRMED;
+        this.payment.changeStatus(COMPLETED);
     }
 
     public void cancel() {
@@ -86,7 +80,7 @@ public class Booking extends BaseTime {
     }
 
     public void reject() {
-        this.status = BookingStatus.REJECTED;
+        this.status = REJECTED;
         this.payment.changeStatus(WITHDRAWN);
     }
 }

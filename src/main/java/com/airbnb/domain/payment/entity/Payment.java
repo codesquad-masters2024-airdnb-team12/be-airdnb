@@ -34,6 +34,7 @@ public class Payment extends BaseTime {
     private PaymentStatus status;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Card card;
 
     @Column(updatable = false)
@@ -52,11 +53,12 @@ public class Payment extends BaseTime {
     private int finalAmount;
 
     @Builder
-    private Payment(Booking booking, AmountResult amountResult) {
+    private Payment(Booking booking, AmountResult amountResult, Card card) {
         this.booking = booking;
         this.feePolicy = amountResult.getFeePolicy();
         this.discountPolicy = amountResult.getDiscountPolicy();
         this.status = PaymentStatus.PENDING;
+        this.card = card;
         this.totalAmount = amountResult.getTotalAmount();
         this.hostFeeAmount = amountResult.getHostFeeAmount();
         this.guestFeeAmount = amountResult.getGuestFeeAmount();
@@ -76,11 +78,6 @@ public class Payment extends BaseTime {
         this.guestFeeAmount = guestFeeAmount;
         this.discountAmount = discountAmount;
         this.finalAmount = finalAmount;
-    }
-
-    public void execute(Card card) {
-        this.status = PaymentStatus.COMPLETED;
-        this.card = card;
     }
 
     public void changeStatus(PaymentStatus status) {

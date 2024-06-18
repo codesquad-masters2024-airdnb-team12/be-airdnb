@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class BookingScheduler {
+public class DataBatchScheduler {
 
     private final BookingService bookingService;
 
-    // 매일 자정에 실행
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void updateBookingStatus() {
-        bookingService.updateStatusByDate();
+    @Scheduled(cron = "0 0 15 * * ?")
+    public void updateBookingStatusByCheckIn() {
+        bookingService.updateStatusByCheckIn();
+    }
+
+    @Scheduled(cron = "0 0 11 * * ?")
+    public void updateBookingStatusByCheckOut() {
+        bookingService.updateStatusByCheckOut();
     }
 }

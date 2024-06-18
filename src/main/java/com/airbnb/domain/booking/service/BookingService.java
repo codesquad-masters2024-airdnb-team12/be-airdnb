@@ -1,6 +1,7 @@
 package com.airbnb.domain.booking.service;
 
 import static com.airbnb.domain.booking.entity.BookingStatus.COMPLETED;
+import static com.airbnb.domain.booking.entity.BookingStatus.CONFIRMED;
 import static com.airbnb.domain.booking.entity.BookingStatus.USING;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
@@ -14,8 +15,12 @@ import com.airbnb.domain.booking.repository.BookingRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
 import com.airbnb.domain.payment.dto.AmountResult;
+import com.airbnb.domain.payment.entity.Card;
 import com.airbnb.domain.payment.entity.Payment;
-import com.airbnb.domain.payment.service.AmountCalculationService;
+import com.airbnb.domain.payment.util.AmountCalculationUtil;
+import com.airbnb.domain.policy.entity.DiscountPolicy;
+import com.airbnb.domain.policy.entity.FeePolicy;
+import com.airbnb.domain.policy.service.PolicyService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +35,21 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final MemberRepository memberRepository;
     private final AccommodationRepository accommodationRepository;
-    private final AmountCalculationService amountCalculationService;
+    private final AmountCalculationUtil amountCalculationUtil;
+    private final PolicyService policyService;
 
     @Transactional
     public BookingResponse create(Long guestId, Long accommodationId, BookingCreateRequest request) {
         Member guest = memberRepository.findById(guestId).orElseThrow();
         Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow();
 
-        Booking newBooking = bookingRepository.save(request.toEntity(guest, accommodation));
+        Booking entity = request.toEntity(guest, accommodation);
+        AmountResult amountResult = getAmountResult(entity);
+        Card guestCard = Card.valueOf(request.getCardName());
+
+        Payment newPayment = Payment.builder().booking(entity).amountResult(amountResult).card(guestCard).build();
+        entity.setPayment(newPayment);
+        Booking newBooking = bookingRepository.save(entity);
 
         return BookingResponse.from(newBooking);
     }
@@ -53,21 +65,24 @@ public class BookingService {
     }
 
     @Transactional
-    public void updateStatusByDate() {
+    public void updateStatusByCheckIn() {
         LocalDate today = LocalDate.now();
-        bookingRepository.findAll().stream().filter(booking -> booking.needChangeUsingStatus(today))
+        bookingRepository.findByCheckInEqualsAndStatus(today, CONFIRMED)
             .forEach(booking -> booking.changeStatus(USING));
-        bookingRepository.findAll().stream().filter(booking -> booking.needChangeCompletedStatus(today))
+    }
+
+    @Transactional
+    public void updateStatusByCheckOut() {
+        LocalDate today = LocalDate.now();
+        bookingRepository.findByCheckOutEqualsAndStatus(today, USING)
             .forEach(booking -> booking.changeStatus(COMPLETED));
     }
 
     @Transactional
     public BookingResponse approve(Long bookingId) {
         Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-        AmountResult amountResult = amountCalculationService.getAmountResult(targetBooking);
-        Payment newPayment = Payment.builder().booking(targetBooking).amountResult(amountResult).build();
 
-        targetBooking.approve(newPayment);
+        targetBooking.approve();
 
         return BookingResponse.from(targetBooking);
     }
@@ -87,4 +102,12 @@ public class BookingService {
 
         return BookingResponse.from(targetBooking);
     }
+
+    private AmountResult getAmountResult(Booking booking) {
+        LocalDate bookingCreatedDate = booking.getCreatedAt().toLocalDate();
+        FeePolicy feePolicy = policyService.getFeePolicyByDate(bookingCreatedDate);
+        DiscountPolicy discountPolicy = policyService.getDiscountPolicyByDate(bookingCreatedDate);
+        return amountCalculationUtil.getAmountResult(booking, feePolicy, discountPolicy);
+    }
+
 }
