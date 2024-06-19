@@ -80,4 +80,8 @@ public class Member extends BaseTime {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public boolean isKey(String memberKey) {
+        return this.email.equals(memberKey);
+    }
 }

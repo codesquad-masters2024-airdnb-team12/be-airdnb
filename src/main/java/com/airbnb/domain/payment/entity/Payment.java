@@ -83,4 +83,12 @@ public class Payment extends BaseTime {
     public void changeStatus(PaymentStatus status) {
         this.status = status;
     }
+
+    public boolean isRecipient(String RecipientKey) {
+        return this.booking.isHost(RecipientKey);
+    }
+
+    public boolean isPayer(String payerKey) {
+        return this.booking.isGuest(payerKey);
+    }
 }

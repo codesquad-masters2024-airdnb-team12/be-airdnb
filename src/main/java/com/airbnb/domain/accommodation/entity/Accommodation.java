@@ -130,4 +130,8 @@ public class Accommodation extends BaseTime {
     public void addAccommodationInfos(Set<AccommodationInfo> accommodationInfos) {
         this.accommodationInfos.addAll(accommodationInfos);
     }
+
+    public boolean isHost(String hostEmail) {
+        return this.host.getEmail().equals(hostEmail);
+    }
 }

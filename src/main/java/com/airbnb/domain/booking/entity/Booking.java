@@ -83,4 +83,12 @@ public class Booking extends BaseTime {
         this.status = REJECTED;
         this.payment.changeStatus(WITHDRAWN);
     }
+
+    public boolean isGuest(String guestKey) {
+        return this.guest.isKey(guestKey);
+    }
+
+    public boolean isHost(String hostEmail) {
+        return this.accommodation.isHost(hostEmail);
+    }
 }

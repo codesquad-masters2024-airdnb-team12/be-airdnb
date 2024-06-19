@@ -24,6 +24,8 @@ import com.airbnb.domain.policy.service.PolicyService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +41,8 @@ public class BookingService {
     private final PolicyService policyService;
 
     @Transactional
-    public BookingResponse create(Long guestId, Long accommodationId, BookingCreateRequest request) {
-        Member guest = memberRepository.findById(guestId).orElseThrow();
+    public BookingResponse create(String guestKey, Long accommodationId, BookingCreateRequest request) {
+        Member guest = memberRepository.findByEmail(guestKey).orElseThrow();
         Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow();
 
         Booking entity = request.toEntity(guest, accommodation);
@@ -54,14 +56,25 @@ public class BookingService {
         return BookingResponse.from(newBooking);
     }
 
-    public BookingListResponse getAllByGuestIdAndStatus(Long guestId, BookingStatus status) {
-        List<Booking> bookings = bookingRepository.findByGuestIdAndStatus(guestId, status);
+    public BookingListResponse getAllByGuestKeyAndStatus(String guestKey, BookingStatus status) {
+        List<Booking> bookings = bookingRepository.findByGuestEmailAndStatus(guestKey, status);
         return BookingListResponse.from(bookings);
     }
 
-    public BookingListResponse getAllByHostIdAndStatus(Long hostId, BookingStatus status) {
-        List<Booking> bookings = bookingRepository.findByAccommodationHostIdAndStatus(hostId, status);
+    public BookingListResponse getAllByHostKeyAndStatus(String hostKey, BookingStatus status) {
+        List<Booking> bookings = bookingRepository.findByAccommodationHostEmailAndStatus(hostKey, status);
         return BookingListResponse.from(bookings);
+    }
+
+    public BookingResponse getById(Long bookingId) {
+        Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
+
+        // 현재 로그인된 사용자가 조회하고자 하는 예약의 게스트 또는 호스트와 일치하는지 검증
+        if (!validateHostAuth(targetBooking) && !validateGuestAuth(targetBooking)) {
+            throw new IllegalArgumentException("조회 권한이 없습니다.");
+        }
+
+        return BookingResponse.from(targetBooking);
     }
 
     @Transactional
@@ -79,25 +92,53 @@ public class BookingService {
     @Transactional
     public BookingResponse approve(Long bookingId) {
         Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-        targetBooking.approve();
 
+        // 현재 로그인된 호스트가 승인하고자 하는 예약의 호스트와 일치하는지 검증
+        if (!validateHostAuth(targetBooking)) {
+            throw new IllegalArgumentException("승인 권한이 없습니다.");
+        }
+
+        targetBooking.approve();
         return BookingResponse.from(targetBooking);
     }
 
     @Transactional
     public BookingResponse cancel(Long bookingId) {
         Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-        targetBooking.cancel();
 
+        // 현재 로그인된 호스트가 취소하고자 하는 예약의 게스트와 일치하는지 검증
+        if (!validateGuestAuth(targetBooking)) {
+            throw new IllegalArgumentException("취소 권한이 없습니다.");
+        }
+
+        targetBooking.cancel();
         return BookingResponse.from(targetBooking);
     }
 
     @Transactional
     public BookingResponse reject(Long bookingId) {
         Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-        targetBooking.reject();
 
+        // 현재 로그인된 호스트가 거절하고자 하는 예약의 호스트와 일치하는지 검증
+        if (!validateHostAuth(targetBooking)) {
+            throw new IllegalArgumentException("거절 권한이 없습니다.");
+        }
+
+        targetBooking.reject();
         return BookingResponse.from(targetBooking);
+    }
+
+    private boolean validateHostAuth(Booking booking) {
+        return booking.isHost(getLoggedInMemberKey());
+    }
+
+    private boolean validateGuestAuth(Booking booking) {
+        return booking.isGuest(getLoggedInMemberKey());
+    }
+
+    private String getLoggedInMemberKey() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 
     private AmountResult getAmountResult(Booking booking) {

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByGuestIdAndStatus(Long guestId, BookingStatus status);
-    List<Booking> findByAccommodationHostIdAndStatus(Long hostId, BookingStatus status);
+    List<Booking> findByGuestEmailAndStatus(String guestEmail, BookingStatus status);
+    List<Booking> findByAccommodationHostEmailAndStatus(String hostEmail, BookingStatus status);
     List<Booking> findByCheckInEqualsAndStatus(LocalDate targetDate, BookingStatus status);
     List<Booking> findByCheckOutEqualsAndStatus(LocalDate targetDate, BookingStatus status);
 }
