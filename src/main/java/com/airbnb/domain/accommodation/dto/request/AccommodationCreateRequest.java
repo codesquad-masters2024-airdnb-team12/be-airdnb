@@ -1,8 +1,8 @@
 package com.airbnb.domain.accommodation.dto.request;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
-import com.airbnb.domain.accommodation.entity.AccommodationType;
-import com.airbnb.domain.accommodation.entity.BuildingType;
+import com.airbnb.domain.common.AccommodationType;
+import com.airbnb.domain.common.BuildingType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
 import com.airbnb.domain.member.entity.Member;
@@ -91,8 +91,8 @@ public class AccommodationCreateRequest {
                 .bed(bed)
                 .bath(bath)
                 .maxGuests(maxGuests)
-                .accommodationType(AccommodationType.valueOf(accommodationType))
-                .buildingType(BuildingType.valueOf(buildingType))
+                .accommodationType(AccommodationType.of(accommodationType))
+                .buildingType(BuildingType.of(buildingType))
                 .description(description)
                 .costPerNight(costPerNight)
                 .initialDiscountApplied(initialDiscountApplied)

@@ -1,4 +1,4 @@
-package com.airbnb.domain.accommodation.entity;
+package com.airbnb.domain.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,8 @@ public enum AccommodationType {
 
     // TODO: 예외 처리
     public static AccommodationType of(String accommodationType) {
-        return Arrays.stream(AccommodationType.values()).filter(a -> a.getName().equals(accommodationType))
+        return Arrays.stream(AccommodationType.values())
+                .filter(a -> a.getName().equals(accommodationType) || a.name().equalsIgnoreCase(accommodationType))
                 .findAny().orElseThrow(() -> new NoSuchElementException("해당 숙소 유형이 존재하지 않습니다."));
     }
 }

@@ -1,8 +1,8 @@
 package com.airbnb.domain.accommodation.dto.response;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
-import com.airbnb.domain.accommodation.entity.AccommodationType;
-import com.airbnb.domain.accommodation.entity.BuildingType;
+import com.airbnb.domain.common.AccommodationType;
+import com.airbnb.domain.common.BuildingType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
