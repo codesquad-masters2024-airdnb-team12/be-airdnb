@@ -1,5 +1,6 @@
 package com.airbnb.domain.accommodation.repository;
 
+import com.airbnb.domain.accommodation.dto.response.AccommodationFacilities;
 import com.airbnb.domain.accommodation.dto.response.AccommodationOverview;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 
@@ -10,4 +11,6 @@ public interface AccommodationCustomRepo {
     Optional<Accommodation> findDetailById(Long accommodationId);
 
     Optional<AccommodationOverview> findOverviewById(Long accommodationId);
+
+    Optional<AccommodationFacilities> findFacilitiesById(Long accommodationId);
 }

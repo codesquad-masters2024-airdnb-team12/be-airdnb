@@ -3,6 +3,8 @@ package com.airbnb.domain.common;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum FacilityType {
@@ -18,4 +20,10 @@ public enum FacilityType {
     ACCOMMODATION("숙소에서 이용 가능");
 
     private final String description;
+
+    public static FacilityType of(String name) {
+        return Arrays.stream(FacilityType.values()).filter(f -> f.name().equals(name))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 편의시설 타입입니다."));
+    }
 }

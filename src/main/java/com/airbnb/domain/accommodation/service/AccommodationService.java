@@ -91,15 +91,34 @@ public class AccommodationService {
         AccommodationOverview accommodationOverview = accommodationRepository.findOverviewById(accommodationId)
                 .orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
 
-        if (!accommodationOverview.getHost().getId().equals(hostId)) {
-            throw new IllegalStateException("자신의 숙소만 조회할 수 있습니다.");
+        if (!accommodationOverview.getHostId().equals(hostId)) {
+            throw new IllegalStateException("자신의 숙소 정보만 조회할 수 있습니다.");
         }
 
         return accommodationOverview;
     }
 
     public AccommodationFacilities getFacilities(Long hostId, Long accommodationId) {
-        return null;
+        AccommodationFacilities accommodationFacilities = accommodationRepository.findFacilitiesById(accommodationId)
+                .orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
+
+        if (!accommodationFacilities.getHostId().equals(hostId)) {
+            throw new IllegalStateException("자신의 숙소 정보만 조회할 수 있습니다.");
+        }
+
+        accommodationFacilities.setFacilities(
+                Stream.concat(
+                        accommodationFacilities.getFacilitySet().stream()
+                                .map(fs -> new AbstractMap.SimpleEntry<>(fs.getType().getDescription(), fs.getName())),
+                        accommodationFacilities.getCustomizedFacilitySet().stream()
+                                .map(cfs -> new AbstractMap.SimpleEntry<>(cfs.getType().getDescription(), cfs.getName()))
+                ).collect(Collectors.groupingBy(
+                        Map.Entry::getKey,
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toSet())
+                ))
+        );
+
+        return accommodationFacilities;
     }
 
     public AccommodationCost getCosts(Long hostId, Long accommodationId) {

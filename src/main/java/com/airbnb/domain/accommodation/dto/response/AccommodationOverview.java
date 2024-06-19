@@ -4,7 +4,6 @@ import com.airbnb.domain.accommodation.entity.AccommodationType;
 import com.airbnb.domain.accommodation.entity.BuildingType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
-import com.airbnb.domain.member.entity.Member;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
@@ -16,7 +15,7 @@ public class AccommodationOverview {
     private Long id;
 
     @JsonIgnore
-    private Member host;    // 자신이 등록한 숙소인지 확인하기 위함이지 반환용 x
+    private Long hostId;    // 자신이 등록한 숙소인지 확인하기 위함이지 반환용 x
     private String name;
     private int bedroom;
     private int bed;
@@ -31,9 +30,9 @@ public class AccommodationOverview {
     private String buildingType;
 
     @QueryProjection
-    public AccommodationOverview(Long id, Member host, String name, int bedroom, int bed, int bath, int maxGuests, String description, Address address, Point coordinate, AccommodationType accommodationType, BuildingType buildingType) {
+    public AccommodationOverview(Long id, Long hostId, String name, int bedroom, int bed, int bath, int maxGuests, String description, Address address, Point coordinate, AccommodationType accommodationType, BuildingType buildingType) {
         this.id = id;
-        this.host = host;
+        this.hostId = hostId;
         this.name = name;
         this.bedroom = bedroom;
         this.bed = bed;
