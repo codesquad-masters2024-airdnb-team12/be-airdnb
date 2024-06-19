@@ -1,6 +1,7 @@
 package com.airbnb.domain.accommodation.controller;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationOverviewEditRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationCost;
 import com.airbnb.domain.accommodation.dto.response.AccommodationFacilities;
 import com.airbnb.domain.accommodation.dto.response.AccommodationOverview;
@@ -58,6 +59,18 @@ public class HostAccommodationController {
 
         return ResponseEntity.ok(
                 accommodationService.getCosts(hostId, accommodationId)
+        );
+    }
+
+    @PatchMapping("/{accommodationId}/overview")
+    public ResponseEntity<AccommodationOverview> editOverview(
+            @PathVariable Long accommodationId,
+            @Valid @RequestBody AccommodationOverviewEditRequest request
+    ) {
+        Long hostId = 1L;
+
+        return ResponseEntity.ok(
+                accommodationService.editOverview(hostId, accommodationId, request)
         );
     }
 }

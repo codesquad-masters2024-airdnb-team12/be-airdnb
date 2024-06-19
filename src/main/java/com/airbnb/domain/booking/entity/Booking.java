@@ -1,4 +1,4 @@
-package com.airbnb.domain.booking;
+package com.airbnb.domain.booking.entity;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.BaseTime;

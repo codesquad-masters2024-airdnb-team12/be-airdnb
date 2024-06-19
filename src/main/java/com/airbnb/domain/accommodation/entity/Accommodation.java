@@ -131,4 +131,18 @@ public class Accommodation extends BaseTime {
     public void addAccommodationCustomizedFacilities(Set<AccommodationCustomizedFacility> accommodationCustomizedFacilities) {
         this.accommodationCustomizedFacilities.addAll(accommodationCustomizedFacilities);
     }
+
+    public void updateAccommodationOverview(String name, int bedroom, int bed, int bath, int maxGuests, String description,
+                                            Address address, Point point, AccommodationType accommodationType, BuildingType buildingType) {
+        this.name = name;
+        this.bedroom = bedroom;
+        this.bed = bed;
+        this.bath = bath;
+        this.maxGuests = maxGuests;
+        this.description = description;
+        this.address = address == null ? this.address : address;
+        this.coordinate = point == null ? this.coordinate : point;
+        this.accommodationType = accommodationType == null ? this.accommodationType : accommodationType;
+        this.buildingType = buildingType == null ? this.buildingType : buildingType;
+    }
 }

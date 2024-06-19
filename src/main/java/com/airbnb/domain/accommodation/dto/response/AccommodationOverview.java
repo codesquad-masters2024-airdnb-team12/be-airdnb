@@ -1,15 +1,20 @@
 package com.airbnb.domain.accommodation.dto.response;
 
+import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.entity.AccommodationType;
 import com.airbnb.domain.accommodation.entity.BuildingType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.locationtech.jts.geom.Point;
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class AccommodationOverview {
 
     private Long id;
@@ -43,5 +48,21 @@ public class AccommodationOverview {
         this.coordinate = Coordinate.of(coordinate);
         this.accommodationType = accommodationType.getName();
         this.buildingType = buildingType.getName();
+    }
+
+    public static AccommodationOverview of(Accommodation accommodation) {
+        return AccommodationOverview.builder()
+                .id(accommodation.getId())
+                .name(accommodation.getName())
+                .bedroom(accommodation.getBedroom())
+                .bed(accommodation.getBed())
+                .bath(accommodation.getBath())
+                .maxGuests(accommodation.getMaxGuests())
+                .description(accommodation.getDescription())
+                .address(accommodation.getAddress())
+                .coordinate(Coordinate.of(accommodation.getCoordinate()))
+                .accommodationType(accommodation.getAccommodationType().getName())
+                .buildingType(accommodation.getBuildingType().getName())
+                .build();
     }
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 public class AccommodationCreateRequest {
 
     @NotBlank
+    @Size(max = 120)
     private String name;
 
     @NotBlank

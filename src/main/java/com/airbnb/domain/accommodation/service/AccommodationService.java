@@ -1,10 +1,12 @@
 package com.airbnb.domain.accommodation.service;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationOverviewEditRequest;
 import com.airbnb.domain.accommodation.dto.response.*;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
+import com.airbnb.domain.booking.repository.BookingRepository;
 import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
@@ -27,6 +29,7 @@ public class AccommodationService {
     private final AccommodationRepository accommodationRepository;
     private final MemberRepository memberRepository;
     private final FacilityRepository facilityRepository;
+    private final BookingRepository bookingRepository;
 
     @Transactional
     public AccommodationResponse create(Long hostId, AccommodationCreateRequest request) {
@@ -123,5 +126,20 @@ public class AccommodationService {
 
     public AccommodationCost getCosts(Long hostId, Long accommodationId) {
         return null;
+    }
+
+    @Transactional
+    public AccommodationOverview editOverview(Long hostId, Long accommodationId, AccommodationOverviewEditRequest request) {
+        Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
+
+        if (!accommodation.getHost().getId().equals(hostId)) {
+            throw new IllegalStateException("자신의 숙소 정보만 조회할 수 있습니다.");
+        }
+
+        // 위치, 건물, 숙소정보는 변경사항이 있고, 예약이 없을 때만 수정 가능
+        boolean bookingExists = bookingRepository.existsByAccommodationId(accommodationId);
+        request.updateEntity(accommodation, bookingExists);
+
+        return AccommodationOverview.of(accommodation);
     }
 }
