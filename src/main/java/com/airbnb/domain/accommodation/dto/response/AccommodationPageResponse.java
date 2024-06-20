@@ -5,24 +5,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class AccommodationPageResponse {
 
-    private Page<AccommodationResponse> accommodationResponses;
+    private Long totalElements;
+    private Integer currentPage;
+    private Integer totalPages;
+    private List<AccommodationResponse> content;
 
-    public static AccommodationPageResponse of(Page<Accommodation> accommodationPage) {
+    public static AccommodationPageResponse of(Page<Accommodation> accommodations) {
         return AccommodationPageResponse.builder()
-                .accommodationResponses(
-                        new PageImpl<>(
-                                accommodationPage.getContent().stream().map(AccommodationResponse::of).collect(Collectors.toList()),
-                                accommodationPage.getPageable(), accommodationPage.getTotalPages())
-                )
+                .totalElements(accommodations.getTotalElements())
+                .currentPage(accommodations.getNumber() + 1)
+                .totalPages(accommodations.getTotalPages())
+                .content(accommodations.stream().map(AccommodationResponse::of).toList())
                 .build();
     }
 }
