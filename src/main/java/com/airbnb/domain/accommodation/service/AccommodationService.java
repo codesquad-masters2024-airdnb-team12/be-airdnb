@@ -155,14 +155,34 @@ public class AccommodationService {
             throw new IllegalStateException("자신의 숙소 정보만 수정할 수 있습니다.");
         }
 
-        Set<AccommodationFacility> newFacilities = request.getFacilityIds().stream()
-                .map(id -> AccommodationFacility.builder()
+        Set<Long> facilityIds = new HashSet<>(request.getFacilityIds());
+        Set<AccommodationFacility> existingFacilities = accommodation.getAccommodationFacilities();
+
+        // 기존 Facility ID
+        Set<Long> existingFacilityIds = existingFacilities.stream()
+                .map(f -> f.getFacility().getId())
+                .collect(Collectors.toSet());
+
+        Set<Long> idsToAdd = new HashSet<>(facilityIds);
+        idsToAdd.removeAll(existingFacilityIds);
+
+        Set<Long> idsToRemove = new HashSet<>(existingFacilityIds);
+        idsToRemove.removeAll(facilityIds);
+
+        accommodation.getAccommodationFacilities().removeIf(f -> idsToRemove.contains(f.getFacility().getId()));
+
+        List<Facility> facilitiesToAdd = facilityRepository.findAllById(idsToAdd);
+        if (facilitiesToAdd.size() != idsToAdd.size()) {
+            throw new NoSuchElementException("존재하지 않는 편의시설이 포함되어 있습니다.");
+        }
+
+        Set<AccommodationFacility> newFacilities = facilitiesToAdd.stream()
+                .map(facility -> AccommodationFacility.builder()
                         .accommodation(accommodation)
-                        .facility(facilityRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 편의시설입니다.")))
+                        .facility(facility)
                         .build())
                 .collect(Collectors.toSet());
 
-        accommodation.getAccommodationFacilities().clear();
         accommodation.getAccommodationFacilities().addAll(newFacilities);
 
         return AccommodationFacilityListResponse.of(accommodation.getAccommodationFacilities().stream().toList());
