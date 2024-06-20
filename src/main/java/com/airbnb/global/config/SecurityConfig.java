@@ -7,7 +7,10 @@ import com.airbnb.global.auth.jwt.JwtAuthFilter;
 import com.airbnb.global.auth.oauth2.handler.OAuth2SuccessHandler;
 import com.airbnb.global.auth.oauth2.service.CustomOAuth2UserService;
 import java.util.Arrays;
+import java.util.Collections;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -38,6 +41,9 @@ public class SecurityConfig {
         "/auth/**"
     };
 
+    @Value("${cors.originUrl}")
+    private String corsOriginUrl;
+
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtAuthFilter jwtAuthFilter;
@@ -67,7 +73,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Collections.singletonList(corsOriginUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);

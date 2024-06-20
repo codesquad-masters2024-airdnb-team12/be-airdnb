@@ -44,6 +44,9 @@ server:
   servlet:
     context-path: ${url-prefix}
 
+cors:
+  originUrl: ${cors-originUrl}
+
 jwt:
   access-token:
     secret: ${jwt-access-token.secret}

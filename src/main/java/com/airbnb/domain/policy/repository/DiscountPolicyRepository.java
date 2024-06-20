@@ -6,5 +6,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DiscountPolicyRepository extends JpaRepository<DiscountPolicy, Long> {
-    Optional<DiscountPolicy> findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate now);
+    Optional<DiscountPolicy> findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDate startDate, LocalDate endDate);
 }

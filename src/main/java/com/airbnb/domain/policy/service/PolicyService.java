@@ -18,12 +18,12 @@ public class PolicyService {
     private final DiscountPolicyRepository discountPolicyRepository;
 
     public FeePolicy getFeePolicyByDate(LocalDate baseDate) {
-        return feePolicyRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqual(baseDate)
+        return feePolicyRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqual(baseDate, baseDate)
             .orElseThrow();
     }
 
     public DiscountPolicy getDiscountPolicyByDate(LocalDate baseDate) {
-        return discountPolicyRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqual(baseDate)
+        return discountPolicyRepository.findFirstByStartDateLessThanEqualAndEndDateGreaterThanEqual(baseDate, baseDate)
             .orElseThrow();
     }
 }
