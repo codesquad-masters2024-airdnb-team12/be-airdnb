@@ -11,11 +11,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberListResponse {
 
-    private final List<MemberResponse> members;
+    private List<MemberResponse> members;
 
-    public static MemberListResponse of(List<Member> members) {
+    public static MemberListResponse from(List<Member> members) {
         return MemberListResponse.builder()
-            .members(members.stream().map(MemberResponse::of).toList())
+            .members(members.stream().map(MemberResponse::from).toList())
             .build();
     }
 }

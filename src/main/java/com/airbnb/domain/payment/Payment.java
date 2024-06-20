@@ -2,8 +2,10 @@ package com.airbnb.domain.payment;
 
 import com.airbnb.domain.booking.entity.Booking;
 import com.airbnb.domain.common.BaseTime;
-import com.airbnb.domain.policy.DiscountPolicy;
-import com.airbnb.domain.policy.FeePolicy;
+import com.airbnb.domain.payment.entity.Card;
+import com.airbnb.domain.payment.entity.PaymentStatus;
+import com.airbnb.domain.policy.entity.DiscountPolicy;
+import com.airbnb.domain.policy.entity.FeePolicy;
 import jakarta.persistence.*;
 import lombok.*;
 

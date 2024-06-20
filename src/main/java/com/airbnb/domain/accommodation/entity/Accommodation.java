@@ -128,4 +128,8 @@ public class Accommodation extends BaseTime {
         this.accommodationType = accommodationType == null ? this.accommodationType : accommodationType;
         this.buildingType = buildingType == null ? this.buildingType : buildingType;
     }
+
+    public boolean isHost(String hostEmail) {
+        return this.host.getEmail().equals(hostEmail);
+    }
 }
