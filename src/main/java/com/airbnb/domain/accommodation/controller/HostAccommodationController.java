@@ -3,7 +3,7 @@ package com.airbnb.domain.accommodation.controller;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
 import com.airbnb.domain.accommodation.dto.request.AccommodationOverviewEditRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationCost;
-import com.airbnb.domain.accommodation.dto.response.AccommodationFacilities;
+import com.airbnb.domain.accommodation.dto.response.AccommodationFacilityListResponse;
 import com.airbnb.domain.accommodation.dto.response.AccommodationOverview;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.service.AccommodationService;
@@ -41,7 +41,7 @@ public class HostAccommodationController {
     }
 
     @GetMapping("/{accommodationId}/facilities")
-    public ResponseEntity<AccommodationFacilities> getFacilities(
+    public ResponseEntity<AccommodationFacilityListResponse> getFacilities(
             @PathVariable Long accommodationId
     ) {
         Long hostId = 1L;

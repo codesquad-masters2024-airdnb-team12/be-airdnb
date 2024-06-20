@@ -1,4 +1,4 @@
-package com.airbnb.domain.accommodationFacility;
+package com.airbnb.domain.accommodationFacility.entity;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.facility.entity.Facility;
@@ -29,13 +29,17 @@ public class AccommodationFacility implements Persistable<AccommodationFacilityI
     @JoinColumn(name = "facility_id", nullable = false)
     private Facility facility;
 
+    @Column(length = 100)
+    private String description;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
-    private AccommodationFacility(Accommodation accommodation, Facility facility) {
+    private AccommodationFacility(Accommodation accommodation, Facility facility, String description) {
         this.accommodation = accommodation;
         this.facility = facility;
+        this.description = description;
         this.id = new AccommodationFacilityId(accommodation.getId(), facility.getId());
     }
 

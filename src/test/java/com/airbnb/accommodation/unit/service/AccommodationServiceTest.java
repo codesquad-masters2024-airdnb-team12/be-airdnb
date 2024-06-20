@@ -1,11 +1,11 @@
 package com.airbnb.accommodation.unit.service;
 
 import com.airbnb.domain.accommodation.dto.response.AccommodationPageResponse;
+import com.airbnb.domain.accommodationFacility.entity.AccommodationFacility;
+import com.airbnb.domain.accommodationFacility.repository.AccommodationFacilityRepository;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
-import com.airbnb.domain.common.FacilityType;
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
-import com.airbnb.domain.accommodation.dto.request.AccommodationFacilityInfoRequest;
 import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.AccommodationType;
@@ -28,10 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -53,6 +50,9 @@ class AccommodationServiceTest {
     @Mock
     FacilityRepository facilityRepository;
 
+    @Mock
+    AccommodationFacilityRepository accommodationFacilityRepository;
+
     FixtureMonkey sut;
 
     @BeforeEach
@@ -67,21 +67,23 @@ class AccommodationServiceTest {
     @Test
     void givenMemberIdAndAccommodationCreateRequest_whenCreateAccommodation_thenSaveAndReturnAccommodationResponse() {
         // given
+        Facility facility = mock(Facility.class);
         AccommodationCreateRequest request = sut.giveMeBuilder(AccommodationCreateRequest.class)
                 .set("accommodationType", AccommodationType.APARTMENT.name())
                 .set("buildingType", BuildingType.ROOM.name())
-                .set("info", Set.of(new AccommodationFacilityInfoRequest("코딩 가능", FacilityType.ACTIVITY_LEISURE.name())))
+                .set("facilities", Set.of(facility.getId()))
                 .sample();
         Member member = mock(Member.class);
         Accommodation accommodation = request.toEntity(member);
-
-        Set<Facility> facilities = new HashSet<>(request.getFacilities().stream()
-                .map(f -> sut.giveMeBuilder(Facility.class).set("type", FacilityType.ACTIVITY_LEISURE).set("name", f).sample())
-                .toList());
+        AccommodationFacility accommodationFacility = AccommodationFacility.builder()
+                .accommodation(accommodation)
+                .facility(facility)
+                .build();
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(accommodationRepository.save(any(Accommodation.class))).willReturn(accommodation);
-        given(facilityRepository.findByNameIn(anySet())).willReturn(Set.copyOf(facilities));
+        given(facilityRepository.findAllById(any())).willReturn(List.of(facility));
+        given(accommodationFacilityRepository.saveAll(any())).willReturn(List.of(accommodationFacility));
 
         // when
         AccommodationResponse accommodationResponse = accommodationService.create(member.getId(), request);
@@ -114,7 +116,6 @@ class AccommodationServiceTest {
                 .accommodationType(AccommodationType.HOTEL)
                 .buildingType(BuildingType.ALL)
                 .accommodationFacilities(new HashSet<>())
-                .accommodationCustomizedFacilities(new HashSet<>())
                 .costPerNight(100000)
                 .initialDiscountApplied(true)
                 .weeklyDiscountApplied(false)

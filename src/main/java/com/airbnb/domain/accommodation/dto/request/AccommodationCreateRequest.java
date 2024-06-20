@@ -6,7 +6,7 @@ import com.airbnb.domain.common.BuildingType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
 import com.airbnb.domain.member.entity.Member;
-import com.airbnb.global.validator.NoBlankStrings;
+import com.airbnb.global.validator.NoNullElements;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
@@ -66,12 +66,8 @@ public class AccommodationCreateRequest {
     @NotBlank
     private String accommodationType;   // 숙소 유형
 
-    @NotNull
-    @NoBlankStrings
-    private Set<String> facilities;     // 필수 편의시설
-
-    @NotNull
-    private Set<AccommodationFacilityInfoRequest> info; // 호스트 입력 숙소 편의시설 정보
+    @NoNullElements
+    private Set<Long> facilities;     // 편의시설
 
     public Accommodation toEntity(Member host) {
         Address accommoAddress = Address.builder()

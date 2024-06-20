@@ -22,9 +22,13 @@ public class Facility extends BaseTime {
     @Column(nullable = false)
     private String name;
 
+    @Column(updatable = false)
+    private Boolean forSearch;  // 검색 조건에 포함되는 편의시설 여부
+
     @Builder
-    private Facility(FacilityType type, String name) {
+    private Facility(FacilityType type, String name, Boolean forSearch) {
         this.type = type;
         this.name = name;
+        this.forSearch = forSearch;
     }
 }

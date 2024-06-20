@@ -21,8 +21,9 @@ public enum FacilityType {
 
     private final String description;
 
-    public static FacilityType of(String name) {
-        return Arrays.stream(FacilityType.values()).filter(f -> f.name().equals(name))
+    public static FacilityType of(String facilityType) {
+        return Arrays.stream(FacilityType.values())
+                .filter(f -> f.name().equalsIgnoreCase(facilityType) || f.getDescription().equals(facilityType))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 편의시설 타입입니다."));
     }

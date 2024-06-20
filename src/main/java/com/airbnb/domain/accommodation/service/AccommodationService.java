@@ -6,6 +6,8 @@ import com.airbnb.domain.accommodation.dto.response.*;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
+import com.airbnb.domain.accommodationFacility.entity.AccommodationFacility;
+import com.airbnb.domain.accommodationFacility.repository.AccommodationFacilityRepository;
 import com.airbnb.domain.booking.repository.BookingRepository;
 import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.facility.repository.FacilityRepository;
@@ -19,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class AccommodationService {
     private final MemberRepository memberRepository;
     private final FacilityRepository facilityRepository;
     private final BookingRepository bookingRepository;
+    private final AccommodationFacilityRepository accommodationFacilityRepository;
 
     @Transactional
     public AccommodationResponse create(Long hostId, AccommodationCreateRequest request) {
@@ -37,23 +39,32 @@ public class AccommodationService {
 
         Accommodation entity = request.toEntity(host);
 
-        // 태그 조회
-        Set<String> names = new HashSet<>(request.getFacilities());
-        Set<Facility> facilities = facilityRepository.findByNameIn(names);
-        Set<String> foundNames = facilities.stream().map(Facility::getName).collect(Collectors.toSet());
+        // 편의시설 조회
+        if (request.getFacilities() != null) {
+            Set<Long> facilityIds = request.getFacilities();
+            List<Facility> facilities = facilityRepository.findAllById(facilityIds);
 
-        if (names.stream().anyMatch(name -> !foundNames.contains(name))) {
-            throw new IllegalArgumentException("존재하지 않는 편의시설입니다");
+            List<Long> foundFacilityIds = facilities.stream().map(Facility::getId).toList();
+            List<Long> missingFacilityIds = facilityIds.stream().filter(id -> !foundFacilityIds.contains(id)).toList();
+
+            if (!missingFacilityIds.isEmpty()) {
+                throw new IllegalArgumentException("존재하지 않는 편의시설입니다: " + missingFacilityIds);
+            }
+
+            // 숙소 편의시설 등록
+            Set<AccommodationFacility> accommodationFacilities = new HashSet<>();
+
+            for(Facility facility : facilities) {
+                AccommodationFacility accommodationFacility = AccommodationFacility.builder()
+                        .accommodation(entity)
+                        .facility(facility)
+                        .build();
+
+                accommodationFacilities.add(accommodationFacility);
+            }
+
+            accommodationFacilityRepository.saveAll(accommodationFacilities);
         }
-
-        // 숙소 태그 등록
-        entity.addAccommodationFacilities(facilities);
-
-        // 숙소 정보 등록
-        entity.addAccommodationCustomizedFacilities(
-                request.getInfo().stream().map(i -> i.toEntity(entity))
-                        .collect(Collectors.toSet())
-        );
 
         // 첫 이용객 할인 적용 시
         if (entity.isInitialDiscountApplied()) {
@@ -77,15 +88,14 @@ public class AccommodationService {
         Accommodation accommodation = accommodationRepository.findDetailById(accommodationId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 숙소입니다."));
 
-        Map<String, List<String>> groupedFacilities = Stream.concat(
+
+        Map<String, List<String>> groupedFacilities =
                 accommodation.getAccommodationFacilities().stream()
-                        .map(af -> new AbstractMap.SimpleEntry<>(af.getFacility().getType().getDescription(), af.getFacility().getName())),
-                accommodation.getAccommodationCustomizedFacilities().stream()
-                        .map(acf -> new AbstractMap.SimpleEntry<>(acf.getType().getDescription(), acf.getName()))
-        ).collect(Collectors.groupingBy(
-                Map.Entry::getKey,
-                Collectors.mapping(Map.Entry::getValue, Collectors.toList())
-        ));
+                        .map(af -> new AbstractMap.SimpleEntry<>(af.getFacility().getType().getDescription(), af.getFacility().getName()))
+                        .collect(Collectors.groupingBy(
+                                Map.Entry::getKey,
+                                Collectors.mapping(Map.Entry::getValue, Collectors.toList())
+                        ));
 
         return AccommodationDetailResponse.of(accommodation, groupedFacilities);
     }
@@ -101,27 +111,17 @@ public class AccommodationService {
         return accommodationOverview;
     }
 
-    public AccommodationFacilities getFacilities(Long hostId, Long accommodationId) {
-        AccommodationFacilities accommodationFacilities = accommodationRepository.findFacilitiesById(accommodationId)
-                .orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
+    public AccommodationFacilityListResponse getFacilities(Long hostId, Long accommodationId) {
+        Accommodation accommodation = accommodationRepository.findById(accommodationId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 숙소입니다."));
 
-        if (!accommodationFacilities.getHostId().equals(hostId)) {
+        if (!accommodation.getHost().getId().equals(hostId)) {
             throw new IllegalStateException("자신의 숙소 정보만 조회할 수 있습니다.");
         }
 
-        accommodationFacilities.setFacilities(
-                Stream.concat(
-                        accommodationFacilities.getFacilitySet().stream()
-                                .map(fs -> new AbstractMap.SimpleEntry<>(fs.getType().getDescription(), fs.getName())),
-                        accommodationFacilities.getCustomizedFacilitySet().stream()
-                                .map(cfs -> new AbstractMap.SimpleEntry<>(cfs.getType().getDescription(), cfs.getName()))
-                ).collect(Collectors.groupingBy(
-                        Map.Entry::getKey,
-                        Collectors.mapping(Map.Entry::getValue, Collectors.toSet())
-                ))
-        );
+        List<AccommodationFacility> accommodationFacilities = accommodationFacilityRepository.findAllByAccommodation(accommodation);
 
-        return accommodationFacilities;
+        return AccommodationFacilityListResponse.of(accommodationFacilities);
     }
 
     public AccommodationCost getCosts(Long hostId, Long accommodationId) {

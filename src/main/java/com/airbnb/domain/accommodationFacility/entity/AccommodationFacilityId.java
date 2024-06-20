@@ -1,4 +1,4 @@
-package com.airbnb.domain.accommodationFacility;
+package com.airbnb.domain.accommodationFacility.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

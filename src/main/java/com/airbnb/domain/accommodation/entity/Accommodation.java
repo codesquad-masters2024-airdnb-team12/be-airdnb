@@ -1,13 +1,11 @@
 package com.airbnb.domain.accommodation.entity;
 
-import com.airbnb.domain.AccommodationCustomizedFacility.entity.AccommodationCustomizedFacility;
 import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
-import com.airbnb.domain.accommodationFacility.AccommodationFacility;
+import com.airbnb.domain.accommodationFacility.entity.AccommodationFacility;
 import com.airbnb.domain.common.AccommodationType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.BaseTime;
 import com.airbnb.domain.common.BuildingType;
-import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.global.util.GeometryUtil;
 import jakarta.persistence.*;
@@ -33,7 +31,7 @@ public class Accommodation extends BaseTime {
     @Column(name = "accommodation_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "host_id", referencedColumnName = "member_id", nullable = false)
     private Member host;
 
@@ -74,13 +72,9 @@ public class Accommodation extends BaseTime {
     @Column(nullable = false)
     private BuildingType buildingType;
 
-    @OneToMany(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "accommodation")
     @Column(nullable = false)
     private Set<AccommodationFacility> accommodationFacilities;
-
-    @OneToMany(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
-    @Column(nullable = false)
-    private Set<AccommodationCustomizedFacility> accommodationCustomizedFacilities;
 
     @OneToOne(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
     private AccommodationDiscount accommodationDiscount;
@@ -94,7 +88,7 @@ public class Accommodation extends BaseTime {
     private boolean monthlyDiscountApplied;
 
     @Builder
-    private Accommodation(Member host, String name, Address address, double longitude, double latitude, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, Set<AccommodationCustomizedFacility> accommodationCustomizedFacilities, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
+    private Accommodation(Member host, String name, Address address, double longitude, double latitude, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
         this.host = host;
         this.name = name;
         this.address = address;
@@ -107,7 +101,6 @@ public class Accommodation extends BaseTime {
         this.accommodationType = accommodationType;
         this.buildingType = buildingType;
         this.accommodationFacilities = accommodationFacilities == null ? new HashSet<>() : accommodationFacilities;
-        this.accommodationCustomizedFacilities = accommodationCustomizedFacilities == null ? new HashSet<>() : accommodationCustomizedFacilities;
         this.accommodationDiscount = accommodationDiscount;
         this.costPerNight = costPerNight;
         this.initialDiscountApplied = initialDiscountApplied;
@@ -117,21 +110,6 @@ public class Accommodation extends BaseTime {
 
     public void addAccommodationDiscount(AccommodationDiscount accommodationDiscount) {
         this.accommodationDiscount = accommodationDiscount;
-    }
-
-    public void addAccommodationFacility(Facility facility) {
-        this.accommodationFacilities.add(AccommodationFacility.builder()
-                .accommodation(this)
-                .facility(facility)
-                .build());
-    }
-
-    public void addAccommodationFacilities(Set<Facility> facilities) {
-        facilities.forEach(this::addAccommodationFacility);
-    }
-
-    public void addAccommodationCustomizedFacilities(Set<AccommodationCustomizedFacility> accommodationCustomizedFacilities) {
-        this.accommodationCustomizedFacilities.addAll(accommodationCustomizedFacilities);
     }
 
     public void updateAccommodationOverview(String name, int bedroom, int bed, int bath, int maxGuests, String description,
