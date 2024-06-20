@@ -1,8 +1,6 @@
 package com.airbnb.domain.accommodation.dto.response;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
-import com.airbnb.domain.common.AccommodationType;
-import com.airbnb.domain.common.BuildingType;
 import com.airbnb.domain.common.Address;
 import com.airbnb.domain.common.Coordinate;
 import lombok.AllArgsConstructor;
@@ -18,6 +16,7 @@ public class AccommodationDetailResponse {
     private Long hostId;
     private String hostName;
     private String hostImgUrl;
+    private String name;
     private Address address;
     private Coordinate coordinate;
     private int bedroom;
@@ -25,8 +24,8 @@ public class AccommodationDetailResponse {
     private int bath;
     private int maxGuests;
     private String description;
-    private AccommodationType accommodationType;
-    private BuildingType buildingType;
+    private String accommodationType;
+    private String buildingType;
     private AccommodationFacilityListResponse facilities;
     private int remainDiscountCnt;
     private int costPerNight;
@@ -40,6 +39,7 @@ public class AccommodationDetailResponse {
                 .hostId(accommodation.getHost().getId())
                 .hostName(accommodation.getHost().getName())
                 .hostImgUrl(accommodation.getHost().getImgUrl())
+                .name(accommodation.getName())
                 .address(accommodation.getAddress())
                 .coordinate(Coordinate.of(accommodation.getCoordinate()))
                 .bedroom(accommodation.getBedroom())
@@ -47,8 +47,8 @@ public class AccommodationDetailResponse {
                 .bath(accommodation.getBath())
                 .maxGuests(accommodation.getMaxGuests())
                 .description(accommodation.getDescription())
-                .accommodationType(accommodation.getAccommodationType())
-                .buildingType(accommodation.getBuildingType())
+                .accommodationType(accommodation.getAccommodationType().getName())
+                .buildingType(accommodation.getBuildingType().getName())
                 .facilities(AccommodationFacilityListResponse.of(accommodation.getAccommodationFacilities().stream().toList()))
                 .remainDiscountCnt(accommodation.getAccommodationDiscount().getRemainDiscountCnt())
                 .costPerNight(accommodation.getCostPerNight())
