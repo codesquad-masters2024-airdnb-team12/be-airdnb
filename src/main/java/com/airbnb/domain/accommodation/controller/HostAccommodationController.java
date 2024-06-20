@@ -1,11 +1,10 @@
 package com.airbnb.domain.accommodation.controller;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationFacilitiesRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationFacilityEditRequest;
 import com.airbnb.domain.accommodation.dto.request.AccommodationOverviewEditRequest;
-import com.airbnb.domain.accommodation.dto.response.AccommodationCost;
-import com.airbnb.domain.accommodation.dto.response.AccommodationFacilityListResponse;
-import com.airbnb.domain.accommodation.dto.response.AccommodationOverview;
-import com.airbnb.domain.accommodation.dto.response.AccommodationResponse;
+import com.airbnb.domain.accommodation.dto.response.*;
 import com.airbnb.domain.accommodation.service.AccommodationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +70,30 @@ public class HostAccommodationController {
 
         return ResponseEntity.ok(
                 accommodationService.editOverview(hostId, accommodationId, request)
+        );
+    }
+
+    @PatchMapping("/{accommodationId}/facility")
+    public ResponseEntity<AccommodationFacilityResponse> editFacility(
+            @PathVariable Long accommodationId,
+            @Valid @RequestBody AccommodationFacilityEditRequest request
+            ) {
+        Long hostId = 1L;
+
+        return ResponseEntity.ok(
+                accommodationService.editAccommodationFacility(hostId, accommodationId, request)
+        );
+    }
+
+    @PatchMapping("/{accommodationId}/facilities")
+    public ResponseEntity<AccommodationFacilityListResponse> editFacilities(
+            @PathVariable Long accommodationId,
+            @Valid @RequestBody AccommodationFacilitiesRequest request
+            ) {
+        Long hostId = 1L;
+
+        return ResponseEntity.ok(
+                accommodationService.editAccommodationFacilities(hostId, accommodationId, request)
         );
     }
 }

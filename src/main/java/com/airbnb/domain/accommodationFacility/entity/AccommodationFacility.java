@@ -47,4 +47,8 @@ public class AccommodationFacility implements Persistable<AccommodationFacilityI
     public boolean isNew() {
         return createdAt == null;
     }
+
+    public void update(String description) {
+        this.description = description;
+    }
 }

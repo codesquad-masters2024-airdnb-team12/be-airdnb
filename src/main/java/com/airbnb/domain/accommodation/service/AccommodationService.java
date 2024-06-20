@@ -1,6 +1,8 @@
 package com.airbnb.domain.accommodation.service;
 
 import com.airbnb.domain.accommodation.dto.request.AccommodationCreateRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationFacilitiesRequest;
+import com.airbnb.domain.accommodation.dto.request.AccommodationFacilityEditRequest;
 import com.airbnb.domain.accommodation.dto.request.AccommodationOverviewEditRequest;
 import com.airbnb.domain.accommodation.dto.response.*;
 import com.airbnb.domain.accommodation.entity.Accommodation;
@@ -52,16 +54,12 @@ public class AccommodationService {
             }
 
             // 숙소 편의시설 등록
-            Set<AccommodationFacility> accommodationFacilities = new HashSet<>();
-
-            for(Facility facility : facilities) {
-                AccommodationFacility accommodationFacility = AccommodationFacility.builder()
-                        .accommodation(entity)
-                        .facility(facility)
-                        .build();
-
-                accommodationFacilities.add(accommodationFacility);
-            }
+            Set<AccommodationFacility> accommodationFacilities = facilities.stream()
+                    .map(facility -> AccommodationFacility.builder()
+                            .accommodation(entity)
+                            .facility(facility)
+                            .build())
+                    .collect(Collectors.toSet());
 
             accommodationFacilityRepository.saveAll(accommodationFacilities);
         }
@@ -88,16 +86,7 @@ public class AccommodationService {
         Accommodation accommodation = accommodationRepository.findDetailById(accommodationId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 숙소입니다."));
 
-
-        Map<String, List<String>> groupedFacilities =
-                accommodation.getAccommodationFacilities().stream()
-                        .map(af -> new AbstractMap.SimpleEntry<>(af.getFacility().getType().getDescription(), af.getFacility().getName()))
-                        .collect(Collectors.groupingBy(
-                                Map.Entry::getKey,
-                                Collectors.mapping(Map.Entry::getValue, Collectors.toList())
-                        ));
-
-        return AccommodationDetailResponse.of(accommodation, groupedFacilities);
+        return AccommodationDetailResponse.of(accommodation);
     }
 
     public AccommodationOverview getOverview(Long hostId, Long accommodationId) {
@@ -133,7 +122,7 @@ public class AccommodationService {
         Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
 
         if (!accommodation.getHost().getId().equals(hostId)) {
-            throw new IllegalStateException("자신의 숙소 정보만 조회할 수 있습니다.");
+            throw new IllegalStateException("자신의 숙소 정보만 수정할 수 있습니다.");
         }
 
         // 위치, 건물, 숙소정보는 변경사항이 있고, 예약이 없을 때만 수정 가능
@@ -141,5 +130,41 @@ public class AccommodationService {
         request.updateEntity(accommodation, bookingExists);
 
         return AccommodationOverview.of(accommodation);
+    }
+
+    @Transactional
+    public AccommodationFacilityResponse editAccommodationFacility(Long hostId, Long accommodationId, AccommodationFacilityEditRequest request) {
+        AccommodationFacility accommodationFacility = accommodationFacilityRepository.findByAccommodationIdAndFacilityId(accommodationId, request.getId())
+                .orElseThrow(() -> new NoSuchElementException("해당 편의시설이 존재하지 않습니다."));
+
+        if (!accommodationFacility.getAccommodation().getHost().getId().equals(hostId)) {
+            throw new IllegalStateException("자신의 숙소 정보만 수정할 수 있습니다.");
+        }
+
+        accommodationFacility.update(request.getDescription());
+
+        return AccommodationFacilityResponse.of(accommodationFacility);
+    }
+
+    @Transactional
+    public AccommodationFacilityListResponse editAccommodationFacilities(Long hostId, Long accommodationId, AccommodationFacilitiesRequest request) {
+        Accommodation accommodation = accommodationRepository.findById(accommodationId)
+                .orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
+
+        if (!accommodation.getHost().getId().equals(hostId)) {
+            throw new IllegalStateException("자신의 숙소 정보만 수정할 수 있습니다.");
+        }
+
+        Set<AccommodationFacility> newFacilities = request.getFacilityIds().stream()
+                .map(id -> AccommodationFacility.builder()
+                        .accommodation(accommodation)
+                        .facility(facilityRepository.findById(id).orElseThrow(() -> new NoSuchElementException("존재하지 않는 편의시설입니다.")))
+                        .build())
+                .collect(Collectors.toSet());
+
+        accommodation.getAccommodationFacilities().clear();
+        accommodation.getAccommodationFacilities().addAll(newFacilities);
+
+        return AccommodationFacilityListResponse.of(accommodation.getAccommodationFacilities().stream().toList());
     }
 }

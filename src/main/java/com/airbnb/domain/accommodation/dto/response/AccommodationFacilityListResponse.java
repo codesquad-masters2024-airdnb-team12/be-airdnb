@@ -18,9 +18,7 @@ public class AccommodationFacilityListResponse {
         Map<String, List<AccommodationFacilityResponse>> facilitiesByType = facilities.stream()
                 .collect(Collectors.groupingBy(
                                 f -> f.getFacility().getType().getDescription(),
-                                Collectors.mapping(f -> new AccommodationFacilityResponse(
-                                        f.getFacility().getId(), f.getFacility().getName(), f.getDescription(), f.getFacility().getForSearch()),
-                                        Collectors.toList())
+                                Collectors.mapping(AccommodationFacilityResponse::of, Collectors.toList())
                         )
                 );
 

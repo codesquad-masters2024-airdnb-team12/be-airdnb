@@ -72,7 +72,7 @@ public class Accommodation extends BaseTime {
     @Column(nullable = false)
     private BuildingType buildingType;
 
-    @OneToMany(mappedBy = "accommodation")
+    @OneToMany(mappedBy = "accommodation", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Column(nullable = false)
     private Set<AccommodationFacility> accommodationFacilities;
 
