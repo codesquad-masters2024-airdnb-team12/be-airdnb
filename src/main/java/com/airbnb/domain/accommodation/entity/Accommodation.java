@@ -15,15 +15,18 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.locationtech.jts.geom.Point;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE accommodation SET deleted = true WHERE accommodation_id = ?")
+@SQLRestriction("deleted IS NULL")
 public class Accommodation extends BaseTime {
 
     @Id
@@ -82,7 +85,7 @@ public class Accommodation extends BaseTime {
     @Min(10_000)
     @Max(10_000_000)
     private int costPerNight;
-    private LocalDateTime deletedAt;
+    private Boolean deleted;
     private boolean initialDiscountApplied;
     private boolean weeklyDiscountApplied;
     private boolean monthlyDiscountApplied;

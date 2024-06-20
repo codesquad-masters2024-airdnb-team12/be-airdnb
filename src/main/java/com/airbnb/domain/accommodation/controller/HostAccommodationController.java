@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 @RequestMapping("/host/accommodations")
 @RestController
 @RequiredArgsConstructor
@@ -94,6 +97,15 @@ public class HostAccommodationController {
 
         return ResponseEntity.ok(
                 accommodationService.editAccommodationFacilities(hostId, accommodationId, request)
+        );
+    }
+
+    @DeleteMapping("/{accommodationId}")
+    public ResponseEntity<Map<String, Long>> deactivateById(@PathVariable Long accommodationId) {
+        Long hostId = 1L;
+
+        return ResponseEntity.ok(
+                Collections.singletonMap("id", accommodationService.deactivateById(hostId, accommodationId))
         );
     }
 }

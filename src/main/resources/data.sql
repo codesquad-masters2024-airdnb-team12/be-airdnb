@@ -1,6 +1,6 @@
 -- member
 INSERT INTO member (LOGIN_TYPE, REFRESH_TOKEN, NAME, IMG_URL, PASSWORD, EMAIL,
-                    ACCOUNT_NUMBER, MODIFIED_AT, DELETED_AT, CREATED_AT, ROLE)
+                    ACCOUNT_NUMBER, MODIFIED_AT, DELETED, CREATED_AT, ROLE)
 VALUES
     ('DEFAULT', 'sample_refresh_token', '박은형', 'https://example.com/image.jpg', 'encoded_password_example', 'parkeh@example.com',
      NULL, '2024-05-10 12:34:56', NULL, '2024-05-10 12:34:56', 'GUEST'),

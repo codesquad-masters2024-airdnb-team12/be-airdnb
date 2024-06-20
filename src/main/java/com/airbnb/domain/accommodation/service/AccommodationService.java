@@ -187,4 +187,19 @@ public class AccommodationService {
 
         return AccommodationFacilityListResponse.of(accommodation.getAccommodationFacilities().stream().toList());
     }
+
+    @Transactional
+    public Long deactivateById(Long hostId, Long accommodationId) {
+        Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow(() -> new NoSuchElementException("숙소가 존재하지 않습니다."));
+
+        if (!accommodation.getHost().getId().equals(hostId)) {
+            throw new IllegalStateException("자신의 숙소만 비활성화할 수 있습니다.");
+        }
+
+        // TODO: 대기중인 예약이 없을 경우에만 비활성화 가능하도록 조건 추가
+
+        accommodationRepository.delete(accommodation);
+
+        return accommodation.getId();
+    }
 }
