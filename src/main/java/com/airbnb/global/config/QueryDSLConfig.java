@@ -1,4 +1,4 @@
-package com.airbnb.config;
+package com.airbnb.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

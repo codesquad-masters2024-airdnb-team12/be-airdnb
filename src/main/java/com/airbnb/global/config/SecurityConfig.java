@@ -1,4 +1,4 @@
-package com.airbnb.config;
+package com.airbnb.global.config;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
