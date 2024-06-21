@@ -131,6 +131,6 @@ class AccommodationServiceTest {
         AccommodationPageResponse response = accommodationService.getPage(pageable);
 
         // then
-        assertThat(response.getAccommodationResponses().getContent()).hasSize(size);
+        assertThat(response.getContent()).hasSize(size);
     }
 }

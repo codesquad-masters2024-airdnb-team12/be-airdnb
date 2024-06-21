@@ -137,7 +137,7 @@ class AccommodationControllerTest {
 
         // then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.accommodationResponses.content", hasSize(size)));
+                .andExpect(jsonPath("$.content", hasSize(size)));
     }
 
     // TODO: 태그 감지
