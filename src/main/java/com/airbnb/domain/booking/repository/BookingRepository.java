@@ -1,7 +1,7 @@
 package com.airbnb.domain.booking.repository;
 
 import com.airbnb.domain.booking.entity.Booking;
-import com.airbnb.domain.booking.entity.BookingStatus;
+import com.airbnb.domain.common.BookingStatus;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

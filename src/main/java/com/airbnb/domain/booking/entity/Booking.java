@@ -1,11 +1,8 @@
 package com.airbnb.domain.booking.entity;
 
-import static com.airbnb.domain.booking.entity.BookingStatus.*;
-import static com.airbnb.domain.payment.entity.PaymentStatus.*;
-import static com.airbnb.domain.payment.entity.PaymentStatus.COMPLETED;
-
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.common.BaseTime;
+import com.airbnb.domain.common.BookingStatus;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.payment.entity.Payment;
 import jakarta.persistence.*;
@@ -67,21 +64,6 @@ public class Booking extends BaseTime {
 
     public void changeStatus(BookingStatus status) {
         this.status = status;
-    }
-
-    public void approve() {
-        this.status = CONFIRMED;
-        this.payment.changeStatus(COMPLETED);
-    }
-
-    public void cancel() {
-        this.status = CANCELED;
-        this.payment.changeStatus(WITHDRAWN);
-    }
-
-    public void reject() {
-        this.status = REJECTED;
-        this.payment.changeStatus(WITHDRAWN);
     }
 
     public boolean isGuest(String guestKey) {

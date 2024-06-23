@@ -7,7 +7,6 @@ import com.airbnb.domain.accommodation.dto.request.AccommodationOverviewEditRequ
 import com.airbnb.domain.accommodation.dto.response.*;
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
-import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
 import com.airbnb.domain.accommodationFacility.entity.AccommodationFacility;
 import com.airbnb.domain.accommodationFacility.repository.AccommodationFacilityRepository;
 import com.airbnb.domain.booking.repository.BookingRepository;
@@ -15,12 +14,15 @@ import com.airbnb.domain.facility.entity.Facility;
 import com.airbnb.domain.facility.repository.FacilityRepository;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
+import com.airbnb.domain.policy.entity.DiscountPolicy;
+import com.airbnb.domain.policy.repository.DiscountPolicyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,7 @@ public class AccommodationService {
     private final FacilityRepository facilityRepository;
     private final BookingRepository bookingRepository;
     private final AccommodationFacilityRepository accommodationFacilityRepository;
+    private final DiscountPolicyRepository discountPolicyRepository;
 
     @Transactional
     public AccommodationResponse create(Long hostId, AccommodationCreateRequest request) {
@@ -66,10 +69,9 @@ public class AccommodationService {
 
         // 첫 이용객 할인 적용 시
         if (entity.isInitialDiscountApplied()) {
-            entity.addAccommodationDiscount(AccommodationDiscount.builder()
-                    .accommodation(entity)
-                    .remainDiscountCnt(3)   // TODO: 할인 정책 조회, 기본 할인 횟수 사용
-                    .build());
+            DiscountPolicy discountPolicy = discountPolicyRepository.findValidDiscountPolicy(LocalDate.now())
+                    .orElseThrow(() -> new NoSuchElementException("할인 정책이 존재하지 않습니다."));
+            entity.setInitialDiscountCnt(discountPolicy.getInitialDiscountCnt());
         }
 
         Accommodation accommodation = accommodationRepository.save(entity);

@@ -1,4 +1,4 @@
-package com.airbnb.domain.payment.entity;
+package com.airbnb.domain.common;
 
 import lombok.Getter;
 

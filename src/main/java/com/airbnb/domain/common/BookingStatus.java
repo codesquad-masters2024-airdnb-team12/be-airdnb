@@ -1,4 +1,4 @@
-package com.airbnb.domain.booking.entity;
+package com.airbnb.domain.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

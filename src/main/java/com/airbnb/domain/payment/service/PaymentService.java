@@ -3,7 +3,7 @@ package com.airbnb.domain.payment.service;
 import com.airbnb.domain.payment.dto.response.PaymentListResponse;
 import com.airbnb.domain.payment.dto.response.PaymentResponse;
 import com.airbnb.domain.payment.entity.Payment;
-import com.airbnb.domain.payment.entity.PaymentStatus;
+import com.airbnb.domain.common.PaymentStatus;
 import com.airbnb.domain.payment.repository.PaymentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

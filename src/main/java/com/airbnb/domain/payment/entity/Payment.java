@@ -2,6 +2,8 @@ package com.airbnb.domain.payment.entity;
 
 import com.airbnb.domain.booking.entity.Booking;
 import com.airbnb.domain.common.BaseTime;
+import com.airbnb.domain.common.Card;
+import com.airbnb.domain.common.PaymentStatus;
 import com.airbnb.domain.payment.dto.AmountResult;
 import com.airbnb.domain.policy.entity.DiscountPolicy;
 import com.airbnb.domain.policy.entity.FeePolicy;

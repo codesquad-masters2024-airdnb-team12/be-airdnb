@@ -2,7 +2,7 @@ package com.airbnb.domain.booking.dto.request;
 
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.booking.entity.Booking;
-import com.airbnb.domain.booking.entity.BookingStatus;
+import com.airbnb.domain.common.BookingStatus;
 import com.airbnb.domain.member.entity.Member;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

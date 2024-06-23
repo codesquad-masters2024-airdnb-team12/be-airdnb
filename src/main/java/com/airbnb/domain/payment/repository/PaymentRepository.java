@@ -1,7 +1,7 @@
 package com.airbnb.domain.payment.repository;
 
 import com.airbnb.domain.payment.entity.Payment;
-import com.airbnb.domain.payment.entity.PaymentStatus;
+import com.airbnb.domain.common.PaymentStatus;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
