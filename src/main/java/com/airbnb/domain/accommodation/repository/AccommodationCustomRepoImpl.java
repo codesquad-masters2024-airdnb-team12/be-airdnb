@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 import static com.airbnb.domain.accommodation.entity.QAccommodation.accommodation;
-import static com.airbnb.domain.accommodationDiscount.QAccommodationDiscount.accommodationDiscount;
 import static com.airbnb.domain.accommodationFacility.entity.QAccommodationFacility.accommodationFacility;
 import static com.airbnb.domain.facility.entity.QFacility.facility;
 import static com.airbnb.domain.member.entity.QMember.member;
@@ -26,7 +25,6 @@ public class AccommodationCustomRepoImpl implements AccommodationCustomRepo{
         Accommodation result = jpaQueryFactory.selectFrom(accommodation)
                 .leftJoin(accommodation.accommodationFacilities, accommodationFacility).fetchJoin()
                 .leftJoin(accommodationFacility.facility, facility).fetchJoin()
-                .leftJoin(accommodation.accommodationDiscount, accommodationDiscount).fetchJoin()
                 .leftJoin(accommodation.host, member).fetchJoin()
                 .where(accommodation.id.eq(accommodationId))
                 .fetchOne();

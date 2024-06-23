@@ -121,6 +121,7 @@ class AccommodationControllerTest {
                 .accommodationFacilities(new HashSet<>())
                 .costPerNight(100000)
                 .initialDiscountApplied(true)
+                .initialDiscountCnt(3)
                 .weeklyDiscountApplied(false)
                 .monthlyDiscountApplied(true)
                 .build();

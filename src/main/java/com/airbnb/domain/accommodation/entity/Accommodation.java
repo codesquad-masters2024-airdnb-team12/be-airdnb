@@ -1,6 +1,5 @@
 package com.airbnb.domain.accommodation.entity;
 
-import com.airbnb.domain.accommodationDiscount.AccommodationDiscount;
 import com.airbnb.domain.accommodationFacility.entity.AccommodationFacility;
 import com.airbnb.domain.common.AccommodationType;
 import com.airbnb.domain.common.Address;
@@ -79,19 +78,20 @@ public class Accommodation extends BaseTime {
     @Column(nullable = false)
     private Set<AccommodationFacility> accommodationFacilities;
 
-    @OneToOne(mappedBy = "accommodation", cascade = CascadeType.PERSIST)
-    private AccommodationDiscount accommodationDiscount;
-
     @Min(10_000)
     @Max(10_000_000)
     private int costPerNight;
     private Boolean deleted;
     private boolean initialDiscountApplied;
+
+    @Min(0)
+    @Max(20)
+    private int initialDiscountCnt;
     private boolean weeklyDiscountApplied;
     private boolean monthlyDiscountApplied;
 
     @Builder
-    private Accommodation(Member host, String name, Address address, double longitude, double latitude, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, AccommodationDiscount accommodationDiscount, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
+    private Accommodation(Member host, String name, Address address, double longitude, double latitude, int bedroom, int bed, int bath, int maxGuests, String description, AccommodationType accommodationType, BuildingType buildingType, Set<AccommodationFacility> accommodationFacilities, int initialDiscountCnt, int costPerNight, Boolean initialDiscountApplied, Boolean weeklyDiscountApplied, Boolean monthlyDiscountApplied) {
         this.host = host;
         this.name = name;
         this.address = address;
@@ -104,15 +104,15 @@ public class Accommodation extends BaseTime {
         this.accommodationType = accommodationType;
         this.buildingType = buildingType;
         this.accommodationFacilities = accommodationFacilities == null ? new HashSet<>() : accommodationFacilities;
-        this.accommodationDiscount = accommodationDiscount;
+        this.initialDiscountCnt = initialDiscountCnt;
         this.costPerNight = costPerNight;
         this.initialDiscountApplied = initialDiscountApplied;
         this.weeklyDiscountApplied = weeklyDiscountApplied;
         this.monthlyDiscountApplied = monthlyDiscountApplied;
     }
 
-    public void addAccommodationDiscount(AccommodationDiscount accommodationDiscount) {
-        this.accommodationDiscount = accommodationDiscount;
+    public void setInitialDiscountCnt(int initialDiscountCnt) {
+        this.initialDiscountCnt = initialDiscountCnt;
     }
 
     public void updateAccommodationOverview(String name, int bedroom, int bed, int bath, int maxGuests, String description,

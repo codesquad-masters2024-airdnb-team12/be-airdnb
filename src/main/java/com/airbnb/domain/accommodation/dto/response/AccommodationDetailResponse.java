@@ -50,7 +50,7 @@ public class AccommodationDetailResponse {
                 .accommodationType(accommodation.getAccommodationType().getName())
                 .buildingType(accommodation.getBuildingType().getName())
                 .facilities(AccommodationFacilityListResponse.of(accommodation.getAccommodationFacilities().stream().toList()))
-                .remainDiscountCnt(accommodation.getAccommodationDiscount() == null ? 0 : accommodation.getAccommodationDiscount().getRemainDiscountCnt())
+                .remainDiscountCnt(accommodation.getInitialDiscountCnt())
                 .costPerNight(accommodation.getCostPerNight())
                 .initialDiscountApplied(accommodation.isInitialDiscountApplied())
                 .weeklyDiscountApplied(accommodation.isWeeklyDiscountApplied())
