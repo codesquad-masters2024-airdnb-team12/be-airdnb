@@ -41,13 +41,24 @@ public class BookingService {
 
     @Transactional
     public BookingResponse create(String guestKey, Long accommodationId, BookingCreateRequest request) {
+        if (!request.isCheckInAfterToday()) {
+            throw new IllegalArgumentException("오늘 이후의 날짜만 예약이 가능합니다.");
+        }
+
+        if(!request.isCheckOutAfterCheckIn()) {
+            throw new IllegalArgumentException("체크아웃은 체크인 이후여야 합니다.");
+        }
+
+        if(bookingRepository.isOverlapBookingExists(accommodationId, request.getCheckIn(), request.getCheckOut())) {
+            throw new IllegalArgumentException("해당 기간에 이미 예약된 숙소입니다.");
+        }
+
         Member guest = memberRepository.findByEmail(guestKey).orElseThrow();
         Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow();
 
-        // TODO: 최대인원 체크
-        // TODO: 필수입력값들은 wrapper로 notNull 체크
-        // TODO: 예약 일자는 오늘 이후여야 함
-        // TODO: 예약이 이미 있을 경우 예약 불가해야 함
+        if (!request.isUnderMaxGuests(accommodation.getMaxGuests())) {
+            throw new IllegalArgumentException("숙소의 예약 가능 최대 인원을 초과했습니다.");
+        }
 
         Booking entity = request.toEntity(guest, accommodation);
         AmountResult amountResult = getAmountResult(entity);
