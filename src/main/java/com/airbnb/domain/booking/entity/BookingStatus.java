@@ -3,6 +3,8 @@ package com.airbnb.domain.booking.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+
 @Getter
 @RequiredArgsConstructor
 public enum BookingStatus {
@@ -16,4 +18,10 @@ public enum BookingStatus {
 
     private final String description;
 
+    public static BookingStatus of(String status) {
+        return Arrays.stream(BookingStatus.values())
+                .filter(s -> s.name().equalsIgnoreCase(status))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("요청한 예약 상태가 존재하지 않습니다."));
+    }
 }
