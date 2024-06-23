@@ -2,7 +2,7 @@ package com.airbnb.domain.payment.controller;
 
 import com.airbnb.domain.payment.dto.response.PaymentListResponse;
 import com.airbnb.domain.payment.dto.response.PaymentResponse;
-import com.airbnb.domain.payment.entity.PaymentStatus;
+import com.airbnb.domain.common.PaymentStatus;
 import com.airbnb.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

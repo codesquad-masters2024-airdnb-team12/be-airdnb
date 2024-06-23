@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,5 +27,9 @@ public class FeePolicy extends BaseTime {
         this.guestFeeRate = guestFeeRate;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public void updateEndDate(LocalDate newStartDate) {
+        this.endDate = newStartDate;
     }
 }
