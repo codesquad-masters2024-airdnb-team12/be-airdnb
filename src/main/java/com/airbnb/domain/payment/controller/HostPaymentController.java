@@ -4,10 +4,7 @@ import com.airbnb.domain.payment.dto.response.PaymentListResponse;
 import com.airbnb.domain.payment.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/host/payments")
 @RestController
@@ -16,8 +13,8 @@ public class HostPaymentController {
 
     private final PaymentService paymentService;
 
-    @GetMapping("/{status}")
-    public ResponseEntity<PaymentListResponse> getAllByRecipientAndStatus(@PathVariable String status) {
+    @GetMapping
+    public ResponseEntity<PaymentListResponse> getAllByRecipientAndStatus(@RequestParam(required = false) String status) {
         Long hostId = 1L;
         return ResponseEntity.ok(
                 paymentService.getAllByHostIdAndStatus(hostId, status));

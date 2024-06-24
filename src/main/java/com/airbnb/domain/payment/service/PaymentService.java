@@ -18,14 +18,25 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     public PaymentListResponse getAllByGuestIdAndStatus(Long guestId, String status) {
-        List<Payment> payments = paymentRepository.findByBookingGuestIdAndStatus(guestId, PaymentStatus.from(status));
+        List<Payment> payments;
+
+        if(status == null || status.isEmpty()) {
+            payments = paymentRepository.findByBookingGuestId(guestId);
+        } else {
+            payments = paymentRepository.findByBookingGuestIdAndStatus(guestId, PaymentStatus.from(status));
+        }
 
         return PaymentListResponse.from(payments);
     }
 
     public PaymentListResponse getAllByHostIdAndStatus(Long hostId, String status) {
-        List<Payment> payments = paymentRepository.findByBookingAccommodationHostIdAndStatus(
-                hostId, PaymentStatus.from(status));
+        List<Payment> payments;
+
+        if(status == null || status.isEmpty()) {
+            payments = paymentRepository.findByBookingAccommodationHostId(hostId);
+        } else {
+            payments = paymentRepository.findByBookingAccommodationHostIdAndStatus(hostId, PaymentStatus.from(status));
+        }
 
         return PaymentListResponse.from(payments);
     }
