@@ -1,4 +1,4 @@
-package com.airbnb.domain.payment.dto;
+package com.airbnb.domain.common;
 
 import com.airbnb.domain.policy.entity.DiscountPolicy;
 import com.airbnb.domain.policy.entity.FeePolicy;

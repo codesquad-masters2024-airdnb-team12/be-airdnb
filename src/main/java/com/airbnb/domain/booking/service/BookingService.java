@@ -1,9 +1,5 @@
 package com.airbnb.domain.booking.service;
 
-import static com.airbnb.domain.common.BookingStatus.COMPLETED;
-import static com.airbnb.domain.common.BookingStatus.CONFIRMED;
-import static com.airbnb.domain.common.BookingStatus.USING;
-
 import com.airbnb.domain.accommodation.entity.Accommodation;
 import com.airbnb.domain.accommodation.repository.AccommodationRepository;
 import com.airbnb.domain.booking.dto.request.BookingCreateRequest;
@@ -12,9 +8,10 @@ import com.airbnb.domain.booking.dto.response.BookingResponse;
 import com.airbnb.domain.booking.entity.Booking;
 import com.airbnb.domain.common.BookingStatus;
 import com.airbnb.domain.booking.repository.BookingRepository;
+import com.airbnb.domain.common.PaymentStatus;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
-import com.airbnb.domain.payment.dto.AmountResult;
+import com.airbnb.domain.common.AmountResult;
 import com.airbnb.domain.common.Card;
 import com.airbnb.domain.payment.entity.Payment;
 import com.airbnb.global.util.AmountCalculationUtil;
@@ -29,6 +26,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.airbnb.domain.common.BookingStatus.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -39,8 +38,9 @@ public class BookingService {
     private final AccommodationRepository accommodationRepository;
     private final PolicyService policyService;
 
+    // 예약
     @Transactional
-    public BookingResponse create(String guestKey, Long accommodationId, BookingCreateRequest request) {
+    public BookingResponse create(Long guestId, Long accommodationId, BookingCreateRequest request) {
         if (!request.isCheckInAfterToday()) {
             throw new IllegalArgumentException("오늘 이후의 날짜만 예약이 가능합니다.");
         }
@@ -53,7 +53,7 @@ public class BookingService {
             throw new IllegalArgumentException("해당 기간에 이미 예약된 숙소입니다.");
         }
 
-        Member guest = memberRepository.findByEmail(guestKey).orElseThrow();
+        Member guest = memberRepository.findById(guestId).orElseThrow();
         Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow();
 
         if (!request.isUnderMaxGuests(accommodation.getMaxGuests())) {
@@ -71,13 +71,14 @@ public class BookingService {
         return BookingResponse.from(newBooking);
     }
 
-    public BookingListResponse getAllByGuestKeyAndStatus(String guestKey, BookingStatus status) {
-        List<Booking> bookings = bookingRepository.findByGuestEmailAndStatus(guestKey, status);
+    public BookingListResponse getAllByGuestIdAndStatus(Long guestId, String status) {
+        List<Booking> bookings = bookingRepository.findByGuestIdAndStatus(guestId, BookingStatus.of(status));
         return BookingListResponse.from(bookings);
     }
 
-    public BookingListResponse getAllByHostKeyAndStatus(String hostKey, BookingStatus status) {
-        List<Booking> bookings = bookingRepository.findByAccommodationHostEmailAndStatus(hostKey, status);
+    public BookingListResponse getAllByHostIdAndStatus(Long hostId, String status) {
+        List<Booking> bookings = bookingRepository.findByAccommodationHostIdAndStatus(
+                hostId, BookingStatus.of(status));
         return BookingListResponse.from(bookings);
     }
 
@@ -114,6 +115,17 @@ public class BookingService {
         }
 
         targetBooking.changeStatus(bookingStatus);
+
+        if (bookingStatus.equals(CONFIRMED)) {
+            targetBooking.getPayment().changeStatus(PaymentStatus.COMPLETED);
+        } else if (bookingStatus.equals(CANCELED) || bookingStatus.equals(REJECTED)) {
+            targetBooking.getPayment().changeStatus(PaymentStatus.WITHDRAWN);
+        }
+
+        // TODO: 게스트 예약취소
+        // TODO: 허용, 거절은 호스트만 가능
+        // TODO: 이용중, 이용완료, 예약 요청으로 상태 변경은 불가능
+
         return BookingResponse.from(targetBooking);
     }
 

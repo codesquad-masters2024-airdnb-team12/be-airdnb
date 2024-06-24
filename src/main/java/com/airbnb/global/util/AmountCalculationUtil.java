@@ -1,7 +1,7 @@
 package com.airbnb.global.util;
 
 import com.airbnb.domain.booking.entity.Booking;
-import com.airbnb.domain.payment.dto.AmountResult;
+import com.airbnb.domain.common.AmountResult;
 import com.airbnb.domain.policy.entity.DiscountPolicy;
 import com.airbnb.domain.policy.entity.FeePolicy;
 import java.time.LocalDate;
