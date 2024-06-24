@@ -37,11 +37,4 @@ public class HostBookingController {
 
         return ResponseEntity.ok(bookingService.reject(hostId, bookingId));
     }
-
-    // 예약 상세 조회
-    @GetMapping("/{bookingId}")
-    public ResponseEntity<BookingResponse> getById(@PathVariable Long bookingId) {
-        Long guestId = 1L;
-        return ResponseEntity.ok(bookingService.getById(guestId, bookingId));
-    }
 }

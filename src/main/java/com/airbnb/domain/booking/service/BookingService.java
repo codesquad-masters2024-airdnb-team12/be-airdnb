@@ -88,7 +88,7 @@ public class BookingService {
     public BookingResponse getById(Long guestId, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
 
-        if (!booking.isGuest(guestId)) {
+        if (!booking.isGuest(guestId) && !booking.isHost(guestId)) {
             throw new IllegalArgumentException("조회 권한이 없습니다.");
         }
 
