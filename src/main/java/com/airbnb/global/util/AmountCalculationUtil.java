@@ -38,7 +38,7 @@ public class AmountCalculationUtil {
     }
 
     private static int getFeeAmount(int totalAmount, double feeRate) {
-        double fee = totalAmount * feeRate * (1 + 0.1);
+        double fee = totalAmount * feeRate;
         return (int) fee;
     }
 

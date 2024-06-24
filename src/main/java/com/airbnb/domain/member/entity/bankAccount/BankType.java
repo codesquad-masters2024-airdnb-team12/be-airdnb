@@ -26,9 +26,9 @@ public enum BankType {
 
     private final String korean;
 
-    public static BankType of(String korean) {
+    public static BankType from(String bankType) {
         return Arrays.stream(BankType.values())
-            .filter(bankType -> bankType.korean.equals(korean))
+            .filter(bt -> bt.getKorean().equals(bankType) || bt.name().equalsIgnoreCase(bankType))
             .findAny()
             .orElseThrow();
     }

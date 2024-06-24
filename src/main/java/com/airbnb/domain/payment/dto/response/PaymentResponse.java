@@ -21,7 +21,7 @@ public class PaymentResponse {
     private int discountAmount;
     private int finalAmount;
 
-    public static PaymentResponse from(Payment payment) {
+    public static PaymentResponse of(Payment payment) {
         return PaymentResponse.builder()
             .id(payment.getId())
             .status(payment.getStatus())

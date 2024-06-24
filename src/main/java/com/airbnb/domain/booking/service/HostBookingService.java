@@ -83,14 +83,4 @@ public class HostBookingService {
 
         return BookingListResponse.from(bookings);
     }
-
-    public BookingResponse getById(Long hostId, Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow();
-
-        if (!booking.isHost(hostId)) {
-            throw new IllegalArgumentException("조회 권한이 없습니다.");
-        }
-
-        return BookingResponse.from(booking);
-    }
 }

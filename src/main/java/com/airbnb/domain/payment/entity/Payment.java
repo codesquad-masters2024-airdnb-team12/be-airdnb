@@ -10,6 +10,8 @@ import com.airbnb.domain.policy.entity.FeePolicy;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -92,5 +94,9 @@ public class Payment extends BaseTime {
 
     public boolean isPayer(Long guestId) {
         return this.booking.isGuest(guestId);
+    }
+
+    public int getRecipientRevenue() {
+        return totalAmount - hostFeeAmount - discountAmount;
     }
 }

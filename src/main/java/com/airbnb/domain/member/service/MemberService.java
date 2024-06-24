@@ -1,10 +1,13 @@
 package com.airbnb.domain.member.service;
 
+import com.airbnb.domain.member.dto.request.PaymentReceiptAccountRequest;
 import com.airbnb.domain.member.dto.request.SignUpRequest;
 import com.airbnb.domain.member.dto.request.UpdateMemberRequest;
 import com.airbnb.domain.member.dto.response.MemberListResponse;
 import com.airbnb.domain.member.dto.response.MemberResponse;
+import com.airbnb.domain.member.dto.response.PaymentReceiptAccountResponse;
 import com.airbnb.domain.member.entity.Member;
+import com.airbnb.domain.member.entity.bankAccount.BankType;
 import com.airbnb.domain.member.repository.MemberRepository;
 import com.airbnb.global.auth.jwt.JwtUtil;
 import java.util.List;
@@ -63,5 +66,13 @@ public class MemberService {
     @Transactional
     public void delete(Long targetId) {
         memberRepository.deleteById(targetId);
+    }
+
+    @Transactional
+    public PaymentReceiptAccountResponse registerAccount(Long hostId, PaymentReceiptAccountRequest request) {
+        Member member = memberRepository.findById(hostId).orElseThrow();
+        member.addBankAccount(BankType.from(request.getBankType()), request.getAccountNumber());
+
+        return PaymentReceiptAccountResponse.of(member.getAccountBank(), member.getAccountNumber());
     }
 }

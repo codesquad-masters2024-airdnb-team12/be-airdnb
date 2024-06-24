@@ -1,9 +1,11 @@
 package com.airbnb.domain.member.controller;
 
+import com.airbnb.domain.member.dto.request.PaymentReceiptAccountRequest;
 import com.airbnb.domain.member.dto.request.SignUpRequest;
 import com.airbnb.domain.member.dto.request.UpdateMemberRequest;
 import com.airbnb.domain.member.dto.response.MemberListResponse;
 import com.airbnb.domain.member.dto.response.MemberResponse;
+import com.airbnb.domain.member.dto.response.PaymentReceiptAccountResponse;
 import com.airbnb.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +54,17 @@ public class MemberController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         memberService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    // 대금 수령 계좌 등록
+    @PostMapping("/paymentAccount")
+    public ResponseEntity<PaymentReceiptAccountResponse> registerAccount(
+            @Valid @RequestBody PaymentReceiptAccountRequest request
+            ) {
+        Long hostId = 1L;
+
+        return ResponseEntity.ok(
+                memberService.registerAccount(hostId, request)
+        );
     }
 }

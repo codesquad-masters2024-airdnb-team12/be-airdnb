@@ -9,7 +9,7 @@ public class BankAccount {
     private final String number;
 
     public BankAccount(String bankName, String number) {
-        this.type = BankType.of(bankName);
+        this.type = BankType.from(bankName);
         this.number = number;
     }
 }

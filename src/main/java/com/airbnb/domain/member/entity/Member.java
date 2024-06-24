@@ -56,14 +56,14 @@ public class Member extends BaseTime {
         this.imgUrl = imgUrl;
         this.refreshToken = refreshToken;
         this.encodedPassword = encodedPassword;
-        this.accountBank = bankName == null ? null : BankType.of(bankName);
+        this.accountBank = bankName == null ? null : BankType.from(bankName);
         this.accountNumber = accountNumber;
     }
 
     public Member update(UpdateMemberRequest updateRequest, PasswordEncoder passwordEncoder) {
         this.name = updateRequest.getName();
         this.encodedPassword = passwordEncoder.encode(updateRequest.getPassword());
-        this.accountBank = BankType.of(updateRequest.getBankName());
+        this.accountBank = BankType.from(updateRequest.getBankName());
         this.accountNumber = updateRequest.getAccountNumber();
         return this;
     }
@@ -81,5 +81,10 @@ public class Member extends BaseTime {
 
     public boolean hasEqualMemberId(Long memberId) {
         return this.id.equals(memberId);
+    }
+
+    public void addBankAccount(BankType bankType, String accountNumber) {
+        this.accountBank = bankType;
+        this.accountNumber = accountNumber;
     }
 }
