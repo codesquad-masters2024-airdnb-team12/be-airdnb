@@ -15,16 +15,16 @@ public class FeePolicyResponse {
     private Long id;
     private Double hostFeeRate;
     private Double guestFeeRate;
-    private LocalDate startTime;
-    private LocalDate endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     public static FeePolicyResponse of(FeePolicy feePolicy) {
         return FeePolicyResponse.builder()
                 .id(feePolicy.getId())
                 .hostFeeRate(feePolicy.getHostFeeRate())
                 .guestFeeRate(feePolicy.getGuestFeeRate())
-                .startTime(feePolicy.getStartDate())
-                .endTime(feePolicy.getEndDate())
+                .startDate(feePolicy.getStartDate())
+                .endDate(feePolicy.getEndDate())
                 .build();
     }
 }

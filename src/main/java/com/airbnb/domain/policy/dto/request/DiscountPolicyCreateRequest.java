@@ -1,6 +1,6 @@
 package com.airbnb.domain.policy.dto.request;
 
-import com.airbnb.domain.policy.entity.FeePolicy;
+import com.airbnb.domain.policy.entity.DiscountPolicy;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -14,26 +14,37 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class FeePolicyCreateRequest {
+public class DiscountPolicyCreateRequest {
+
+    @NotNull
+    @Min(0)
+    private Integer initialDiscountCnt;
 
     @NotNull
     @Min(0)
     @Max(1)
-    private Double hostFeeRate;
+    private Double initialDiscountRate;
 
     @NotNull
     @Min(0)
     @Max(1)
-    private Double guestFeeRate;
+    private Double weeklyDiscountRate;
+
+    @NotNull
+    @Min(0)
+    @Max(1)
+    private Double monthlyDiscountRate;
 
     @NotNull
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public FeePolicy toEntity() {
-        return FeePolicy.builder()
-                .hostFeeRate(hostFeeRate)
-                .guestFeeRate(guestFeeRate)
+    public DiscountPolicy toEntity() {
+        return DiscountPolicy.builder()
+                .initialDiscountCnt(initialDiscountCnt)
+                .initialDiscountRate(initialDiscountRate)
+                .weeklyDiscountRate(weeklyDiscountRate)
+                .monthlyDiscountRate(monthlyDiscountRate)
                 .startDate(startDate)
                 .endDate(endDate)
                 .build();
