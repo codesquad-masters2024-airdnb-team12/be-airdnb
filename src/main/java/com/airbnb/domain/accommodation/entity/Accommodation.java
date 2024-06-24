@@ -129,7 +129,7 @@ public class Accommodation extends BaseTime {
         this.buildingType = buildingType == null ? this.buildingType : buildingType;
     }
 
-    public boolean isHost(String hostEmail) {
-        return this.host.getEmail().equals(hostEmail);
+    public boolean isHost(Long hostId) {
+        return this.host.hasEqualMemberId(hostId);
     }
 }

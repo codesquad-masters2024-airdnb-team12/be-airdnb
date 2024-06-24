@@ -7,8 +7,6 @@ import com.airbnb.domain.common.PaymentStatus;
 import com.airbnb.domain.payment.repository.PaymentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,38 +17,27 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
 
-    public PaymentListResponse getAllByPayerKeyAndStatus(String payerKey, PaymentStatus status) {
-        List<Payment> payments = paymentRepository.findByBookingGuestEmailAndStatus(payerKey, status);
+    public PaymentListResponse getAllByGuestIdAndStatus(Long guestId, String status) {
+        List<Payment> payments = paymentRepository.findByBookingGuestIdAndStatus(guestId, PaymentStatus.from(status));
 
         return PaymentListResponse.from(payments);
     }
 
-    public PaymentListResponse getAllByRecipientKeyAndStatus(String recipientKey, PaymentStatus status) {
-        List<Payment> payments = paymentRepository.findByBookingAccommodationHostEmailAndStatus(recipientKey, status);
+    public PaymentListResponse getAllByHostIdAndStatus(Long hostId, String status) {
+        List<Payment> payments = paymentRepository.findByBookingAccommodationHostIdAndStatus(
+                hostId, PaymentStatus.from(status));
 
         return PaymentListResponse.from(payments);
     }
 
-    public PaymentResponse getById(Long paymentId) {
-        Payment targetPayment = paymentRepository.findById(paymentId).orElseThrow();
+    public PaymentResponse getById(Long guestId, Long paymentId) {
+        Payment payment = paymentRepository.findById(paymentId).orElseThrow();
 
-        if (!validatePayerAuth(targetPayment) && !validateRecipientAuth(targetPayment)) {
+        if (!payment.isPayer(guestId)) {
             throw new IllegalArgumentException("조회 권한이 없습니다.");
         }
 
-        return PaymentResponse.from(targetPayment);
+        return PaymentResponse.from(payment);
     }
 
-    private boolean validateRecipientAuth(Payment payment) {
-        return payment.isRecipient(getLoggedInMemberKey());
-    }
-
-    private boolean validatePayerAuth(Payment payment) {
-        return payment.isPayer(getLoggedInMemberKey());
-    }
-
-    private String getLoggedInMemberKey() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
-    }
 }

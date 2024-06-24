@@ -8,25 +8,24 @@ import com.airbnb.domain.booking.dto.response.BookingResponse;
 import com.airbnb.domain.booking.entity.Booking;
 import com.airbnb.domain.common.BookingStatus;
 import com.airbnb.domain.booking.repository.BookingRepository;
-import com.airbnb.domain.common.PaymentStatus;
 import com.airbnb.domain.member.entity.Member;
 import com.airbnb.domain.member.repository.MemberRepository;
 import com.airbnb.domain.common.AmountResult;
 import com.airbnb.domain.common.Card;
 import com.airbnb.domain.payment.entity.Payment;
+import com.airbnb.domain.policy.repository.DiscountPolicyRepository;
+import com.airbnb.domain.policy.repository.FeePolicyRepository;
 import com.airbnb.global.util.AmountCalculationUtil;
 import com.airbnb.domain.policy.entity.DiscountPolicy;
 import com.airbnb.domain.policy.entity.FeePolicy;
-import com.airbnb.domain.policy.service.PolicyService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.airbnb.domain.common.BookingStatus.*;
+import static com.airbnb.domain.common.BookingStatus.CONFIRMED;
+import static com.airbnb.domain.common.BookingStatus.REQUESTED;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +35,9 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final MemberRepository memberRepository;
     private final AccommodationRepository accommodationRepository;
-    private final PolicyService policyService;
+    private final FeePolicyRepository feePolicyRepository;
+    private final DiscountPolicyRepository discountPolicyRepository;
 
-    // 예약
     @Transactional
     public BookingResponse create(Long guestId, Long accommodationId, BookingCreateRequest request) {
         if (!request.isCheckInAfterToday()) {
@@ -56,6 +55,10 @@ public class BookingService {
         Member guest = memberRepository.findById(guestId).orElseThrow();
         Accommodation accommodation = accommodationRepository.findById(accommodationId).orElseThrow();
 
+        if(accommodation.getHost().getId().equals(guestId)){
+            throw new IllegalArgumentException("자신의 숙소는 예약할 수 없습니다.");
+        }
+
         if (!request.isUnderMaxGuests(accommodation.getMaxGuests())) {
             throw new IllegalArgumentException("숙소의 예약 가능 최대 인원을 초과했습니다.");
         }
@@ -72,81 +75,51 @@ public class BookingService {
     }
 
     public BookingListResponse getAllByGuestIdAndStatus(Long guestId, String status) {
-        List<Booking> bookings = bookingRepository.findByGuestIdAndStatus(guestId, BookingStatus.of(status));
+        List<Booking> bookings;
+
+        if(status == null || status.isEmpty()) {
+            bookings = bookingRepository.findByGuestId(guestId);
+        } else {
+            bookings = bookingRepository.findByGuestIdAndStatus(guestId, BookingStatus.from(status));
+        }
         return BookingListResponse.from(bookings);
     }
 
-    public BookingListResponse getAllByHostIdAndStatus(Long hostId, String status) {
-        List<Booking> bookings = bookingRepository.findByAccommodationHostIdAndStatus(
-                hostId, BookingStatus.of(status));
-        return BookingListResponse.from(bookings);
-    }
+    public BookingResponse getById(Long guestId, Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow();
 
-    public BookingResponse getById(Long bookingId) {
-        Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-
-        // 현재 로그인된 사용자가 조회하고자 하는 예약의 게스트 또는 호스트와 일치하는지 검증
-        if (!validateHostAuth(targetBooking) || !validateGuestAuth(targetBooking)) {
+        if (!booking.isGuest(guestId)) {
             throw new IllegalArgumentException("조회 권한이 없습니다.");
         }
 
-        return BookingResponse.from(targetBooking);
+        return BookingResponse.from(booking);
     }
 
     @Transactional
-    public void updateStatusByCheckIn() {
-        bookingRepository.findByCheckInEqualsAndStatus(LocalDate.now(), CONFIRMED)
-            .forEach(booking -> booking.changeStatus(USING));
-    }
-
-    @Transactional
-    public void updateStatusByCheckOut() {
-        bookingRepository.findByCheckOutEqualsAndStatus(LocalDate.now(), USING)
-            .forEach(booking -> booking.changeStatus(COMPLETED));
-    }
-
-    @Transactional
-    public BookingResponse changeStatus(Long bookingId, String status) {
-        Booking targetBooking = bookingRepository.findById(bookingId).orElseThrow();
-        BookingStatus bookingStatus = BookingStatus.of(status);
-
-        if (!validateHostAuth(targetBooking)) {
-            throw new IllegalArgumentException("예약 상태 수정 권한이 없습니다.");
+    public BookingResponse cancel(Long guestId, Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow();
+        if (!booking.isGuest(guestId) && !booking.isHost(guestId)) {
+            throw new IllegalArgumentException("예약 취소 권한이 없습니다.");
         }
 
-        targetBooking.changeStatus(bookingStatus);
-
-        if (bookingStatus.equals(CONFIRMED)) {
-            targetBooking.getPayment().changeStatus(PaymentStatus.COMPLETED);
-        } else if (bookingStatus.equals(CANCELED) || bookingStatus.equals(REJECTED)) {
-            targetBooking.getPayment().changeStatus(PaymentStatus.WITHDRAWN);
+        if (booking.getStatus() != REQUESTED && booking.getStatus() != CONFIRMED) {
+            throw new IllegalArgumentException("요청 상태나 승인 상태인 예약만 취소할 수 있습니다.");
         }
 
-        // TODO: 게스트 예약취소
-        // TODO: 허용, 거절은 호스트만 가능
-        // TODO: 이용중, 이용완료, 예약 요청으로 상태 변경은 불가능
+        if (!booking.getCheckIn().isAfter(LocalDate.now().plusDays(1))) {
+            throw new IllegalArgumentException("체크인 하루 전까지만 취소할 수 있습니다.");
+        }
 
-        return BookingResponse.from(targetBooking);
-    }
+        booking.cancel();
 
-    private boolean validateHostAuth(Booking booking) {
-        return booking.isHost(getLoggedInMemberKey());
-    }
-
-    private boolean validateGuestAuth(Booking booking) {
-        return booking.isGuest(getLoggedInMemberKey());
-    }
-
-    private String getLoggedInMemberKey() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+        return BookingResponse.from(booking);
     }
 
     private AmountResult getAmountResult(Booking booking) {
         // 예약하는 현재시간 기준으로 수수료 정책 조회
         LocalDate bookingCreatedDate = LocalDate.now();
-        FeePolicy feePolicy = policyService.getFeePolicyByDate(bookingCreatedDate);
-        DiscountPolicy discountPolicy = policyService.getDiscountPolicyByDate(bookingCreatedDate);
+        FeePolicy feePolicy = feePolicyRepository.findValidFeePolicy(bookingCreatedDate).orElseThrow();
+        DiscountPolicy discountPolicy = discountPolicyRepository.findValidDiscountPolicy(bookingCreatedDate).orElseThrow();
         return AmountCalculationUtil.getAmountResult(booking, feePolicy, discountPolicy);
     }
 }

@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
-    List<Payment> findByBookingGuestEmailAndStatus(String payerEmail, PaymentStatus status);
-    List<Payment> findByBookingAccommodationHostEmailAndStatus(String recipientEmail, PaymentStatus status);
+    List<Payment> findByBookingGuestIdAndStatus(Long guestId, PaymentStatus status);
+    List<Payment> findByBookingAccommodationHostIdAndStatus(Long hostId, PaymentStatus status);
 }

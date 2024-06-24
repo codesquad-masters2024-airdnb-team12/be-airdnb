@@ -3,6 +3,9 @@ package com.airbnb.domain.common;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+
 @Getter
 @RequiredArgsConstructor
 public enum PaymentStatus {
@@ -12,4 +15,11 @@ public enum PaymentStatus {
     ;
 
     private final String description;
+
+    public static PaymentStatus from(String paymentStatus) {
+        return Arrays.stream(PaymentStatus.values())
+                .filter(ps -> ps.getDescription().equalsIgnoreCase(paymentStatus))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("해당 결제 상태가 존재하지 않습니다."));
+    }
 }

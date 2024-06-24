@@ -2,8 +2,7 @@ package com.airbnb.domain.booking.controller;
 
 import com.airbnb.domain.booking.dto.response.BookingListResponse;
 import com.airbnb.domain.booking.dto.response.BookingResponse;
-import com.airbnb.domain.booking.service.BookingService;
-import com.airbnb.domain.common.BookingStatus;
+import com.airbnb.domain.booking.service.HostBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,29 +12,36 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class HostBookingController {
 
-    private final BookingService bookingService;
+    private final HostBookingService bookingService;
 
-    /**
-     * TODO:
-     * 호스트 시점에서 볼 수 있는 예약 화면
-     * - 예약 목록 조회
-     * - 예약 상세 조회
-     * - 예약 상태 변경 (승인, 취소, 거절)
-     * => 이용중, 이용 완료는 자동변경되어야 함
-     * -> 예약 자동 승인 기능 구현 (스케줄러)
-     */
-
+    // 예약 목록 조회
     @GetMapping
-    public ResponseEntity<BookingListResponse> getAllByHostAndStatus(@RequestParam String status) {
+    public ResponseEntity<BookingListResponse> getAllByHostAndStatus(@RequestParam(required = false) String status) {
         Long hostId = 1L;
 
         return ResponseEntity.ok(bookingService.getAllByHostIdAndStatus(hostId, status));
     }
 
-    @PostMapping("/{bookingId}")
-    public ResponseEntity<BookingResponse> changeStatus(
-            @PathVariable Long bookingId, @RequestParam String status
-    ) {
-        return ResponseEntity.ok(bookingService.changeStatus(bookingId, status));
+    // 예약 승인
+    @PostMapping("/{bookingId}/approve")
+    public ResponseEntity<BookingResponse> approve(@PathVariable Long bookingId) {
+        Long hostId = 1L;
+
+        return ResponseEntity.ok(bookingService.approve(hostId, bookingId));
+    }
+
+    // 예약 거절
+    @PostMapping("/{bookingId}/reject")
+    public ResponseEntity<BookingResponse> reject(@PathVariable Long bookingId) {
+        Long hostId = 1L;
+
+        return ResponseEntity.ok(bookingService.reject(hostId, bookingId));
+    }
+
+    // 예약 상세 조회
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<BookingResponse> getById(@PathVariable Long bookingId) {
+        Long guestId = 1L;
+        return ResponseEntity.ok(bookingService.getById(guestId, bookingId));
     }
 }

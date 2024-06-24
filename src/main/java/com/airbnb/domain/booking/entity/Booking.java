@@ -10,6 +10,10 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import static com.airbnb.domain.common.BookingStatus.*;
+import static com.airbnb.domain.common.PaymentStatus.COMPLETED;
+import static com.airbnb.domain.common.PaymentStatus.WITHDRAWN;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -66,11 +70,26 @@ public class Booking extends BaseTime {
         this.status = status;
     }
 
-    public boolean isGuest(String guestKey) {
-        return this.guest.isKey(guestKey);
+    public void approve() {
+        this.status = CONFIRMED;
+        this.payment.changeStatus(COMPLETED);
     }
 
-    public boolean isHost(String hostEmail) {
-        return this.accommodation.isHost(hostEmail);
+    public void cancel() {
+        this.status = CANCELED;
+        this.payment.changeStatus(WITHDRAWN);
+    }
+
+    public void reject() {
+        this.status = REJECTED;
+        this.payment.changeStatus(WITHDRAWN);
+    }
+
+    public boolean isGuest(Long guestId) {
+        return this.guest.hasEqualMemberId(guestId);
+    }
+
+    public boolean isHost(Long hostId) {
+        return this.accommodation.isHost(hostId);
     }
 }

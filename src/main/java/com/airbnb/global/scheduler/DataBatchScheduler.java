@@ -1,6 +1,6 @@
 package com.airbnb.global.scheduler;
 
-import com.airbnb.domain.booking.service.BookingService;
+import com.airbnb.domain.booking.service.HostBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DataBatchScheduler {
 
-    private final BookingService bookingService;
+    private final HostBookingService bookingService;
 
     @Scheduled(cron = "0 0 15 * * ?")
     public void updateBookingStatusByCheckIn() {
@@ -19,5 +19,11 @@ public class DataBatchScheduler {
     @Scheduled(cron = "0 0 11 * * ?")
     public void updateBookingStatusByCheckOut() {
         bookingService.updateStatusByCheckOut();
+    }
+
+    // 1시간마다 실행되도록 구현
+    @Scheduled(cron = "0 0 * * * ?")
+    public void approveBookingAfter24Hours() {
+        bookingService.approveBooking();
     }
 }

@@ -18,7 +18,7 @@ public enum BookingStatus {
 
     private final String description;
 
-    public static BookingStatus of(String status) {
+    public static BookingStatus from(String status) {
         return Arrays.stream(BookingStatus.values())
                 .filter(s -> s.name().equalsIgnoreCase(status))
                 .findAny()

@@ -79,7 +79,7 @@ public class Member extends BaseTime {
         this.role = role;
     }
 
-    public boolean isKey(String memberKey) {
-        return this.email.equals(memberKey);
+    public boolean hasEqualMemberId(Long memberId) {
+        return this.id.equals(memberId);
     }
 }
