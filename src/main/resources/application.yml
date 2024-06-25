@@ -22,7 +22,10 @@ spring:
       hibernate:
         show_sql: ${show-sql}
         format_sql: ${format-sql}
-        dialect: org.hibernate.dialect.MySQLDialect
+      jakarta:
+        persistence:
+          jdbc:
+            url: ${datasource.url}
 
     # data.sql operate after hibernate init (not on production)
     defer-datasource-initialization: ${defer-datasource-initialization}
