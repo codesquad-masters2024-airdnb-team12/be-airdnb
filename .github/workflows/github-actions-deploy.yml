@@ -63,6 +63,6 @@ jobs:
         script: |
           sudo docker-compose stop springboot
           sudo docker-compose rm -f springboot
-          docker login -u ${{ secrets.DOCKER_USER_ID }} -p ${{ secrets.DOCKER_USER_PASSWORD }}
+          echo ${{ secrets.DOCKER_USER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USER_ID }} --password-stdin
           sudo docker-compose pull ${{ secrets.DOCKER_USER_ID }}/${{ secrets.DOCKER_HUB_NAME }}:latest
           sudo docker-compose up -d --no-deps springboot
