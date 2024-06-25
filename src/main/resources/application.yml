@@ -18,15 +18,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${ddl-auto} # create create-drop update validate none(default/ on production)
-
     properties:
       hibernate:
         show_sql: ${show-sql}
         format_sql: ${format-sql}
-      dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
+      dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
 
     # data.sql operate after hibernate init (not on production)
     defer-datasource-initialization: ${defer-datasource-initialization}
+
+    # osiv
+    open-in-view: ${osiv}
 
   # sql init (not on production)
   sql:
