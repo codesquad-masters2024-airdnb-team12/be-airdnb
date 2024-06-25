@@ -22,7 +22,7 @@ spring:
       hibernate:
         show_sql: ${show-sql}
         format_sql: ${format-sql}
-        dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
+        dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
 
     # data.sql operate after hibernate init (not on production)
     defer-datasource-initialization: ${defer-datasource-initialization}
